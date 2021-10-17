@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.utils import timezone
-from reportlab.pdfgen import canvas
+# from reportlab.pdfgen import canvas
 from .models import Customer, Comment, Order, Food, Data, Cart, OrderContent, Staff, DeliveryBoy
 from .forms import SignUpForm
 
@@ -76,6 +76,14 @@ def users_admin(request):
 @login_required
 @staff_member_required
 def orders_admin(request):
+    orders = Order.objects.filter()
+    dBoys = Staff.objects.filter(role='Delivery Boy')
+    print(dBoys)
+    return render(request, 'admin_temp/orders.html', {'orders':orders, 'dBoys':dBoys})
+
+@login_required
+@staff_member_required
+def create_orders_admin(request):
     orders = Order.objects.filter()
     dBoys = Staff.objects.filter(role='Delivery Boy')
     print(dBoys)
@@ -348,4 +356,11 @@ def delivery_boy(request):
             return render(request, 'delivery_boy.html', {'orders':orders})
     
     return redirect('hotel:index')
-        
+
+login_required 
+def create_orders_admin(request):
+    items = Food.objects.all()
+    if request.method == "POST":
+        #use this to create order
+        print(request.POST)
+    return render(request, 'admin_temp/create-order.html', {'items':items})

@@ -77,12 +77,8 @@ WSGI_APPLICATION = 'reflex.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'reflex',
-        'USER': 'reflex',
-        'PASSWORD': 'reflex',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -134,3 +130,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL='/accounts/login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+

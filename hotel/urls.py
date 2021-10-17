@@ -9,6 +9,7 @@ urlpatterns = [
     
     url(r'^dashboard/admin/users/$', views.users_admin, name='users_admin'),
     url(r'^dashboard/admin/orders/$', views.orders_admin, name='orders_admin'),
+    url(r'^dashboard/admin/orders/create_order/$', views.create_orders_admin, name='create_orders_admin'),
     url(r'^dashboard/admin/foods/$', views.foods_admin, name='foods_admin'),
     url(r'^dashboard/admin/$', views.dashboard_admin, name='dashboard_admin'),
     url(r'^dashboard/admin/sales/$', views.sales_admin, name='sales_admin'),

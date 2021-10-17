@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 {% include "includes/base.html" %}
 {% include "includes/navbarheader.html" %}
 {% include "includes/navtop.html" %}
@@ -16,6 +16,9 @@
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
+                    <a href={% url 'hotel:create_orders_admin' %} type="button"  class="btn btn-primary">
+                        Create order
+                    </a>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             List of all Orders
