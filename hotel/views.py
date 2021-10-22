@@ -315,6 +315,7 @@ def placeOrder(request):
     print(customer.address)
     items = Cart.objects.filter(user=request.user)
     for item in items:
+        print(item)
         food = item.food
         order = Order.objects.create(customer=customer, order_timestamp=timezone.now(), payment_status="Pending", 
         delivery_status="Pending", total_amount=food.sale_price, payment_method="Cash On Delivery", location=customer.address)
@@ -322,17 +323,17 @@ def placeOrder(request):
         orderContent = OrderContent(food=food, order=order)
         orderContent.save()
         item.delete()
-    mail_subject = 'Order Placed successfully'
-    to = str(customer.customer.email)
-    to_email.append(to)
-    from_email = 'pradeepgangwar39@gmail.com'
-    message = "Hi "+customer.customer.first_name+" Your order was placed successfully. Please go to your dashboard to see your order history. <br> Your order id is "+order.id+""
-    send_mail(
-        mail_subject,
-        message,
-        from_email,
-        to_email,
-    )
+    # mail_subject = 'Order Placed successfully'
+    # to = str(customer.customer.email)
+    # to_email.append(to)
+    # from_email = 'pradeepgangwar39@gmail.com'
+    # message = "Hi "+customer.customer.first_name+" Your order was placed successfully. Please go to your dashboard to see your order history. <br> Your order id is "+order.id+""
+    # send_mail(
+    #     mail_subject,
+    #     message,
+    #     from_email,
+    #     to_email,
+    # )
     return redirect('hotel:cart')
 
 @login_required
@@ -356,11 +357,32 @@ def delivery_boy(request):
             return render(request, 'delivery_boy.html', {'orders':orders})
     
     return redirect('hotel:index')
-
-login_required 
+ 
 def create_orders_admin(request):
     items = Food.objects.all()
     if request.method == "POST":
+        staff = Staff.objects.get(staff_id_id = request.user.id)
+        created_cart = []
+        for index, item in enumerate(request.POST.getlist("product")):
+            cart = Cart.objects.create(food_id=item, user=request.user, quantity=request.POST.getlist("qty")[index])
+            created_cart.append(cart)
+        food = cart.food
+        order = Order.objects.create(staff=staff, order_timestamp=timezone.now(), payment_status="Pending", 
+        delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), payment_method="Cash On Delivery")
+        for cart in created_cart:
+            order.cart.add(cart)
+        return redirect('/dashboard/admin/orders/')
         #use this to create order
-        print(request.POST)
+        # for key, value in request.POST:
+        #     print(key, value)
     return render(request, 'admin_temp/create-order.html', {'items':items})
+
+from django.http import JsonResponse
+import json
+def get_foods(request):
+    items = Food.objects.all().values()
+    return JsonResponse({"models_to_return": list(items)})
+
+def get_food_data(request, food_id):
+    items = Food.objects.filter(id=food_id).values()
+    return JsonResponse({"models_to_return": list(items)})
