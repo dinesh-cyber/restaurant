@@ -29,7 +29,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Customer's Name</th>
+                                <th>Created by</th>
                                 <th>Order Status</th>
                                 <th>Order Time</th>
                                 <th>Amount</th>
@@ -45,7 +45,7 @@
                             {% for order in orders %}
                             <tr>
                                 <td>{{order.id}}</td>
-                                <td>{{order.customer.customer.first_name}} {{order.customer.customer.last_name}}</td>
+                                <td>{{order.staff.staff_id.first_name}} {{order.staff.staff_id.last_name}}</td>
                                 <td>{% if order.if_cancelled == False %}
                                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     {% else %}

@@ -95,7 +95,6 @@ def users_admin(request):
 def orders_admin(request):
     orders = Order.objects.filter()
     dBoys = Staff.objects.filter(role='Delivery Boy')
-    print(dBoys)
     return render(request, 'admin_temp/orders.html', {'orders': orders, 'dBoys': dBoys})
 
 
@@ -105,7 +104,6 @@ def order_view_admin(request, orderID):
     orders = Order.objects.get(id=orderID)
     cart = orders.cart.all()
     dBoys = Staff.objects.filter(role='Delivery Boy')
-    print(orders)
     return render(request, 'admin_temp/order-details.html', {'order': orders, 'dBoys': dBoys, 'cart': cart})
 
 
