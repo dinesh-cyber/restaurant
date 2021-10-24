@@ -113,7 +113,8 @@ class Order(models.Model):
 
     staff = models.ForeignKey(Staff,on_delete=models.CASCADE, null=True, related_name="resturant")
     cart = models.ManyToManyField(Cart)
-    order_timestamp = models.CharField(max_length=100, blank=True)
+    order_timestamp = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(auto_now_add=True)
     delivery_timestamp = models.CharField(max_length=100, blank=True)
     payment_status = models.CharField(max_length = 100, choices = STATUS)
     delivery_status = models.CharField(max_length = 100, choices = STATUS)

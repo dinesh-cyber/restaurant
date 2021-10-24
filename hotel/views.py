@@ -41,6 +41,8 @@ def signup(request):
         
     return render(request, 'registration/signup.html', {'form': form})
 
+import datetime
+
 @login_required
 @staff_member_required
 def dashboard_admin(request):
@@ -50,8 +52,13 @@ def dashboard_admin(request):
     completed_orders = Order.objects.filter(payment_status="Completed")
     top_customers = Customer.objects.filter().order_by('-total_sale')
     latest_orders = Order.objects.filter().order_by('-order_timestamp')
+    today = datetime.date.today()
     datas = Data.objects.filter().order_by('date')
     sales = 0
+    week = Order.objects.filter(order_timestamp__year=today.year).filter(order_timestamp__week=today.isocalendar()[1]).count()
+    year = Order.objects.filter(order_timestamp__year=today.year).count()
+    month = Order.objects.filter(order_timestamp__year=today.year).filter(order_timestamp__month=today.month).count()
+    today = Order.objects.filter(order_timestamp__year=today.year).filter(order_timestamp__date=today).count()
     for order in completed_orders:
         sales += order.total_amount
 
@@ -63,6 +70,10 @@ def dashboard_admin(request):
         'top_customers': top_customers,
         'latest_orders':latest_orders,
         'datas':datas,
+        'week': week,
+        'month': month,
+        'year': year,
+        'today': today
     }
     return render(request, 'admin_temp/index.html', context)
 
@@ -78,7 +89,6 @@ def users_admin(request):
 def orders_admin(request):
     orders = Order.objects.filter()
     dBoys = Staff.objects.filter(role='Delivery Boy')
-    print(dBoys)
     return render(request, 'admin_temp/orders.html', {'orders':orders, 'dBoys':dBoys})
 
 @login_required
@@ -317,7 +327,7 @@ def placeOrder(request):
     for item in items:
         print(item)
         food = item.food
-        order = Order.objects.create(customer=customer, order_timestamp=timezone.now(), payment_status="Pending", 
+        order = Order.objects.create(customer=customer, payment_status="Pending", 
         delivery_status="Pending", total_amount=food.sale_price, payment_method="Cash On Delivery", location=customer.address)
         order.save()
         orderContent = OrderContent(food=food, order=order)
@@ -367,14 +377,11 @@ def create_orders_admin(request):
             cart = Cart.objects.create(food_id=item, user=request.user, quantity=request.POST.getlist("qty")[index])
             created_cart.append(cart)
         food = cart.food
-        order = Order.objects.create(staff=staff, order_timestamp=timezone.now(), payment_status="Pending", 
+        order = Order.objects.create(staff=staff, payment_status="Pending", 
         delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), payment_method="Cash On Delivery")
         for cart in created_cart:
             order.cart.add(cart)
         return redirect('/dashboard/admin/orders/')
-        #use this to create order
-        # for key, value in request.POST:
-        #     print(key, value)
     return render(request, 'admin_temp/create-order.html', {'items':items})
 
 from django.http import JsonResponse
