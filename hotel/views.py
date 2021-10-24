@@ -1,4 +1,6 @@
-from django.shortcuts import render,redirect, get_object_or_404
+from django.http import JsonResponse
+import json
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
@@ -18,6 +20,7 @@ from django.utils import timezone
 from .models import Customer, Comment, Order, Food, Data, Cart, OrderContent, Staff, DeliveryBoy
 from .forms import SignUpForm
 
+
 def signup(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -32,13 +35,14 @@ def signup(request):
             user.save()
             address = form.cleaned_data['address']
             contact = form.cleaned_data['contact']
-            customer = Customer.objects.create(customer=user, address=address, contact=contact)
+            customer = Customer.objects.create(
+                customer=user, address=address, contact=contact)
             customer.save()
             return redirect('http://localhost:8000/accounts/login/')
-        
+
     else:
         form = SignUpForm()
-        
+
     return render(request, 'registration/signup.html', {'form': form})
 
 import datetime
@@ -63,10 +67,10 @@ def dashboard_admin(request):
         sales += order.total_amount
 
     context = {
-        'comments':comments,
-        'orders':orders,
-        'customers':customers,
-        'sales':sales,
+        'comments': comments,
+        'orders': orders,
+        'customers': customers,
+        'sales': sales,
         'top_customers': top_customers,
         'latest_orders':latest_orders,
         'datas':datas,
@@ -77,19 +81,33 @@ def dashboard_admin(request):
     }
     return render(request, 'admin_temp/index.html', context)
 
+
 @login_required
 @staff_member_required
 def users_admin(request):
     customers = Customer.objects.filter()
     print(customers)
-    return render(request, 'admin_temp/users.html', {'users':customers})
+    return render(request, 'admin_temp/users.html', {'users': customers})
+
 
 @login_required
 @staff_member_required
 def orders_admin(request):
     orders = Order.objects.filter()
     dBoys = Staff.objects.filter(role='Delivery Boy')
-    return render(request, 'admin_temp/orders.html', {'orders':orders, 'dBoys':dBoys})
+    print(dBoys)
+    return render(request, 'admin_temp/orders.html', {'orders': orders, 'dBoys': dBoys})
+
+
+@login_required
+@staff_member_required
+def order_view_admin(request, orderID):
+    orders = Order.objects.get(id=orderID)
+    cart = orders.cart.all()
+    dBoys = Staff.objects.filter(role='Delivery Boy')
+    print(orders)
+    return render(request, 'admin_temp/order-details.html', {'order': orders, 'dBoys': dBoys, 'cart': cart})
+
 
 @login_required
 @staff_member_required
@@ -97,19 +115,22 @@ def create_orders_admin(request):
     orders = Order.objects.filter()
     dBoys = Staff.objects.filter(role='Delivery Boy')
     print(dBoys)
-    return render(request, 'admin_temp/orders.html', {'orders':orders, 'dBoys':dBoys})
+    return render(request, 'admin_temp/orders.html', {'orders': orders, 'dBoys': dBoys})
+
 
 @login_required
 @staff_member_required
 def foods_admin(request):
     foods = Food.objects.filter()
-    return render(request, 'admin_temp/foods.html', {'foods':foods})
+    return render(request, 'admin_temp/foods.html', {'foods': foods})
+
 
 @login_required
 @staff_member_required
 def sales_admin(request):
     sales = Data.objects.filter()
-    return render(request, 'admin_temp/sales.html', {'sales':sales})
+    return render(request, 'admin_temp/sales.html', {'sales': sales})
+
 
 def menu(request):
     cuisine = request.GET.get('cuisine')
@@ -118,17 +139,18 @@ def menu(request):
         if ((cuisine == "Gujarati") or (cuisine == "Punjabi")):
             foods = Food.objects.filter(status="Enabled", course=cuisine)
         elif(cuisine == "south"):
-            foods = Food.objects.filter(status="Enabled", course="South Indian")
+            foods = Food.objects.filter(
+                status="Enabled", course="South Indian")
         elif(cuisine == "fast"):
             foods = Food.objects.filter(course="Fast")
     else:
         foods = Food.objects.filter()
-    return render(request, 'menu.html', {'foods':foods, 'cuisine':cuisine})
+    return render(request, 'menu.html', {'foods': foods, 'cuisine': cuisine})
 
 
 def index(request):
     food = Food.objects.filter().order_by('-num_order')
-    return render(request, 'index.html', {'food':food})
+    return render(request, 'index.html', {'food': food})
 
 
 @login_required
@@ -137,12 +159,13 @@ def confirm_order(request, orderID):
     order = Order.objects.get(id=orderID)
     order.confirmOrder()
     order.save()
-    customerID = order.customer.id
-    customer = Customer.objects.get(id=customerID)
-    customer.total_sale += order.total_amount
-    customer.orders += 1
-    customer.save()
+    # customerID = order.customer.id
+    # customer = Customer.objects.get(id=customerID)
+    # customer.total_sale += order.total_amount
+    # customer.orders += 1
+    # customer.save()
     return redirect('hotel:orders_admin')
+
 
 @login_required
 @staff_member_required
@@ -151,18 +174,21 @@ def confirm_delivery(request, orderID):
     order = Order.objects.get(id=orderID)
     order.confirmDelivery()
     order.save()
-    mail_subject = 'Order Delivered successfully'
-    to = str(order.customer.customer.email)
-    to_email.append(to)
-    from_email = 'pradeepgangwar39@gmail.com'
-    message = "Hi "+order.customer.customer.first_name+" Your order was delivered successfully. Please go to your dashboard to see your order history. <br> Your order id is "+orderID+". Share ypour feedback woth us."
-    send_mail(
-        mail_subject,
-        message,
-        from_email,
-        to_email,
-    )
+    # mail_subject = 'Order Delivered successfully'
+    # to = str(order.customer.customer.email)
+    # to_email.append(to)
+    # from_email = 'pradeepgangwar39@gmail.com'
+    # message = "Hi "+order.customer.customer.first_name + \
+    #     " Your order was delivered successfully. Please go to your dashboard to see your order history. <br> Your order id is " + \
+    #     orderID+". Share ypour feedback woth us."
+    # send_mail(
+    #     mail_subject,
+    #     message,
+    #     from_email,
+    #     to_email,
+    # )
     return redirect('hotel:orders_admin')
+
 
 @login_required
 @staff_member_required
@@ -171,11 +197,12 @@ def edit_food(request, foodID):
     if request.method == "POST":
         if request.POST['base_price'] != "":
             food.base_price = request.POST['base_price']
-        
+
         if request.POST['discount'] != "":
-            food.discount = request.POST['discount'] 
-        
-        food.sale_price = (100 - float(food.discount))*float(food.base_price)/100
+            food.discount = request.POST['discount']
+
+        food.sale_price = (100 - float(food.discount)) * \
+            float(food.base_price)/100
 
         status = request.POST.get('disabled')
         print(status)
@@ -183,9 +210,10 @@ def edit_food(request, foodID):
             food.status = "Disabled"
         else:
             food.status = "Enabled"
-        
+
         food.save()
     return redirect('hotel:foods_admin')
+
 
 @login_required
 @staff_member_required
@@ -199,22 +227,25 @@ def add_user(request):
         password = request.POST['password']
         confirm_pass = request.POST['confirm_password']
         username = email.split('@')[0]
-        
+
         if (first_name == "") or (last_name == "") or (address == "") or (contact == "") or (email == "") or (password == "") or (confirm_pass == ""):
             customers = Customer.objects.filter()
             error_msg = "Please enter valid details"
             return render(request, 'admin_temp/users.html', {'users': customers, 'error_msg': error_msg})
 
         if password == confirm_pass:
-            user = User.objects.create(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
+            user = User.objects.create(
+                username=username, email=email, password=password, first_name=first_name, last_name=last_name)
             user.save()
-            cust = Customer.objects.create(customer=user, address=address, contact=contact)
+            cust = Customer.objects.create(
+                customer=user, address=address, contact=contact)
             cust.save()
             success_msg = "New user successfully created"
             customers = Customer.objects.filter()
             return render(request, 'admin_temp/users.html', {'users': customers, 'success_msg': success_msg})
 
     return redirect('hotel:users_admin')
+
 
 @login_required
 @staff_member_required
@@ -236,12 +267,14 @@ def add_food(request):
             error_msg = "Please enter valid details"
             return render(request, 'admin_temp/foods.html', {'foods': foods, 'error_msg': error_msg})
 
-        food = Food.objects.create(name=name, course=course, status=status, content_description=content, base_price=base_price, discount=discount, sale_price=sale_price, image=filename)
+        food = Food.objects.create(name=name, course=course, status=status, content_description=content,
+                                   base_price=base_price, discount=discount, sale_price=sale_price, image=filename)
         food.save()
         foods = Food.objects.filter()
         success_msg = "Please enter valid details"
         return render(request, 'admin_temp/foods.html', {'foods': foods, 'success_msg': success_msg})
     return redirect('hotel:foods_admin')
+
 
 @login_required
 @staff_member_required
@@ -255,6 +288,7 @@ def add_deliveryBoy(request, orderID):
     order.save()
     return redirect('hotel:orders_admin')
 
+
 @login_required
 @staff_member_required
 def add_sales(request):
@@ -262,7 +296,7 @@ def add_sales(request):
         date = request.POST['date']
         sales = request.POST['sales']
         expenses = request.POST['expenses']
-        
+
         if (date is None) or (sales == "") or (expenses == ""):
             sales = Data.objects.filter()
             error_msg = "Please enter valid details"
@@ -276,6 +310,7 @@ def add_sales(request):
 
     return redirect('hotel:foods_admin')
 
+
 @login_required
 @staff_member_required
 def edit_sales(request, saleID):
@@ -283,17 +318,19 @@ def edit_sales(request, saleID):
     if request.method == "POST":
         if request.POST['sales'] != "":
             data.sales = request.POST['sales']
-        
+
         if request.POST['expenses'] != "":
-            data.expenses = request.POST['expenses'] 
-        
+            data.expenses = request.POST['expenses']
+
         data.save()
     return redirect('hotel:sales_admin')
+
 
 @login_required
 def food_details(request, foodID):
     food = Food.objects.get(id=foodID)
-    return render(request, 'user/single.html', {'food':food})
+    return render(request, 'user/single.html', {'food': food})
+
 
 @login_required
 def addTocart(request, foodID, userID):
@@ -303,11 +340,13 @@ def addTocart(request, foodID, userID):
     cart.save()
     return redirect('hotel:cart')
 
+
 @login_required
 def delete_item(request, ID):
     item = Cart.objects.get(id=ID)
     item.delete()
     return redirect('hotel:cart')
+
 
 @login_required
 def cart(request):
@@ -316,7 +355,8 @@ def cart(request):
     total = 0
     for item in items:
         total += item.food.sale_price
-    return render(request, 'cart.html', {'items': items, 'total':total})
+    return render(request, 'cart.html', {'items': items, 'total': total})
+
 
 @login_required
 def placeOrder(request):
@@ -346,12 +386,14 @@ def placeOrder(request):
     # )
     return redirect('hotel:cart')
 
+
 @login_required
 def my_orders(request):
     user = User.objects.get(id=request.user.id)
     customer = Customer.objects.get(customer=user)
     orders = Order.objects.filter(customer=customer)
     return render(request, 'orders.html', {'orders': orders})
+
 
 @login_required
 def delivery_boy(request):
@@ -364,31 +406,32 @@ def delivery_boy(request):
             redirect('hotel:index')
         else:
             orders = DeliveryBoy.objects.filter(delivery_boy=staff)
-            return render(request, 'delivery_boy.html', {'orders':orders})
-    
+            return render(request, 'delivery_boy.html', {'orders': orders})
+
     return redirect('hotel:index')
- 
+
+
 def create_orders_admin(request):
     items = Food.objects.all()
     if request.method == "POST":
-        staff = Staff.objects.get(staff_id_id = request.user.id)
+        staff = Staff.objects.get(staff_id_id=request.user.id)
         created_cart = []
         for index, item in enumerate(request.POST.getlist("product")):
-            cart = Cart.objects.create(food_id=item, user=request.user, quantity=request.POST.getlist("qty")[index])
+            cart = Cart.objects.create(
+                food_id=item, user=request.user, quantity=request.POST.getlist("qty")[index])
             created_cart.append(cart)
         food = cart.food
         order = Order.objects.create(staff=staff, payment_status="Pending", 
-        delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), payment_method="Cash On Delivery")
+            delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), payment_method="Cash On Delivery")
         for cart in created_cart:
             order.cart.add(cart)
         return redirect('/dashboard/admin/orders/')
     return render(request, 'admin_temp/create-order.html', {'items':items})
 
-from django.http import JsonResponse
-import json
 def get_foods(request):
     items = Food.objects.all().values()
     return JsonResponse({"models_to_return": list(items)})
+
 
 def get_food_data(request, food_id):
     items = Food.objects.filter(id=food_id).values()
