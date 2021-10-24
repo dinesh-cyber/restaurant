@@ -30,6 +30,8 @@ urlpatterns = [
         views.confirm_order, name='confirm_order'),
     url(r'^dashboard/admin/orders/view/(?P<orderID>\d+)/$',
         views.order_view_admin, name='view_order'),
+    url(r'^dashboard/admin/orders/edit/(?P<orderID>\d+)/$',
+        views.order_view_edit, name='view_order_edit'),
     url(r'^dashboard/admin/orders/confirm_delivery/(?P<orderID>\d+)/$',
         views.confirm_delivery, name='confirm_delivery'),
 

@@ -106,7 +106,6 @@ def order_view_admin(request, orderID):
     dBoys = Staff.objects.filter(role='Delivery Boy')
     return render(request, 'admin_temp/order-details.html', {'order': orders, 'dBoys': dBoys, 'cart': cart})
 
-
 @login_required
 @staff_member_required
 def create_orders_admin(request):
@@ -408,6 +407,27 @@ def delivery_boy(request):
 
     return redirect('hotel:index')
 
+
+def order_view_edit(request, orderID):
+    orders = Order.objects.get(id=orderID)
+    items = Food.objects.all()
+    if request.method == "POST":
+        staff = Staff.objects.get(staff_id_id=request.user.id)
+        created_cart = []
+        for index, item in enumerate(request.POST.getlist("product")):
+            cart = Cart.objects.create(
+                food_id=item, user=request.user, quantity=request.POST.getlist("qty")[index])
+            created_cart.append(cart)
+        food = cart.food
+        order = Order.objects.filter(id=orderID).update(staff=staff, payment_status="Pending", 
+            note=request.POST.get("note"),
+            delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), 
+            payment_method="Cash On Delivery")
+        orders.cart.clear()
+        for cart in created_cart:
+            orders.cart.add(cart)
+        return redirect('/dashboard/admin/orders/')
+    return render(request, 'admin_temp/edit-order.html', {'items':items, 'order': orders})
 
 def create_orders_admin(request):
     items = Food.objects.all()
