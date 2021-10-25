@@ -254,7 +254,6 @@ def add_food(request):
     if request.method == "POST":
         name = request.POST['name']
         course = request.POST['course']
-        category = request.POST['category']
         status = request.POST['status']
         content = request.POST['content']
         base_price = request.POST['base_price']
@@ -269,7 +268,7 @@ def add_food(request):
             error_msg = "Please enter valid details"
             return render(request, 'admin_temp/foods.html', {'foods': foods, 'error_msg': error_msg})
 
-        food = Food.objects.create(name=name, category=category, course=course, status=status, content_description=content,
+        food = Food.objects.create(name=name, course=course, status=status, content_description=content,
                                    base_price=base_price, discount=discount, sale_price=sale_price, image=filename)
         food.save()
         foods = Food.objects.filter()
@@ -413,9 +412,33 @@ def delivery_boy(request):
     return redirect('hotel:index')
 
 
+def order_view_edit(request, orderID):
+    orders = Order.objects.get(id=orderID)
+    items = Food.objects.all()
+    if request.method == "POST":
+        staff = Staff.objects.get(staff_id_id=request.user.id)
+        created_cart = []
+        for index, item in enumerate(request.POST.getlist("product")):
+            cart = Cart.objects.create(
+                food_id=item, user=request.user, quantity=request.POST.getlist("qty")[index])
+            created_cart.append(cart)
+        food = cart.food
+        order = Order.objects.filter(id=orderID).update(staff=staff, payment_status="Pending",
+                                                        note=request.POST.get(
+                                                            "note"),
+                                                        delivery_status="Pending", total_amount=request.POST.get("net_amount_value"),
+                                                        payment_method="Cash On Delivery")
+        orders.cart.clear()
+        for cart in created_cart:
+            orders.cart.add(cart)
+        return redirect('/dashboard/admin/orders/')
+    return render(request, 'admin_temp/edit-order.html', {'items': items, 'order': orders})
+
+
 def create_orders_admin(request):
     items = Food.objects.all()
     if request.method == "POST":
+        print(request.user.id)
         staff = Staff.objects.get(staff_id_id=request.user.id)
         created_cart = []
         for index, item in enumerate(request.POST.getlist("product")):

@@ -29,7 +29,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Created by</th>
+                                <th>Customer's Name</th>
                                 <th>Order Status</th>
                                 <th>Order Time</th>
                                 <th>Amount</th>
@@ -45,7 +45,7 @@
                             {% for order in orders %}
                             <tr>
                                 <td>{{order.id}}</td>
-                                <td>{{order.staff.staff_id.first_name}} {{order.staff.staff_id.last_name}}</td>
+                                <td>{{order.customer.customer.first_name}} {{order.customer.customer.last_name}}</td>
                                 <td>{% if order.if_cancelled == False %}
                                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     {% else %}
@@ -112,7 +112,7 @@
                                     {% endifequal %}
                                 </td>
                                 <td>
-                                    <a href="/dashboard/admin/orders/confirm_order/{{order.id}}">
+                                    <a href="/confirm_order/{{order.id}}">
                                         <span class="input-group-btn">
                                             <button
                                                 class="btn btn-primary {%ifequal order.payment_status 'Completed'%}disabled{%endifequal%}"
@@ -122,16 +122,11 @@
                                 </td>
 
                                 <td>
-                                    <a href="/dashboard/admin/orders/confirm_delivery/{{order.id}}">
+                                    <a href="/confirm_delivery/{{order.id}}">
                                         <span class="input-group-btn">
                                             <button
                                                 class="btn btn-primary {%ifequal order.delivery_status 'Completed'%}disabled{%endifequal%}"
                                                 type="button">Delivered</button>
-                                        </span>
-                                    </a>
-                                    <a href="/dashboard/admin/orders/view/{{order.id}}">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary " type="button">View order</button>
                                         </span>
                                     </a>
                                 </td>

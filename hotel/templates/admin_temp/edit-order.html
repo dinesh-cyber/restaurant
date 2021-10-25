@@ -11,6 +11,8 @@
 
 <div id="page-wrapper">
     <!-- /.row -->
+    <h2>Edit Order</h2>
+
         <form role="form" action="" method="post" class="form-horizontal">
             {% csrf_token %}
               <div class="box-body">
@@ -42,35 +44,47 @@
                     </tr>
                   </thead>
                    <tbody>
-                     <tr id="row_1">
-                       <td>
-                            <select class="form-control select_group product" data-row-id="row_1" id="product_1" name="product" style="width:100%;" onchange="getProductData(1)" required>
-                                <option value=""></option>
-                                {% for item in items %}
-                                    <option value="{{item.id}}" >{{item.name}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                        <td><input type="text" name="qty" id="qty_1" class="form-control" required onkeyup="getTotal(1)"></td>
-                        <td>
-                          <input type="text" name="rate" id="rate_1" class="form-control" disabled autocomplete="off">
-                          <input type="hidden" name="rate_value" id="rate_value_1" class="form-control" autocomplete="off">
-                        </td>
-                        <td>
-                          <input type="text" name="amount" id="amount_1" class="form-control" disabled autocomplete="off">
-                          <input type="hidden" name="amount_value" id="amount_value_1" class="form-control" autocomplete="off">
-                        </td>
-                        <td><button type="button" class="btn btn-default" onclick="removeRow('1')"><i class="fa fa-close"></i></button></td>
-                     </tr>
+                       {% for food in order.cart.all %}
+                            <tr id="row_{{forloop.counter}}">
+                            <td>
+                                    <select value="food.food.id" class="form-control select_group product" data-row-id="row_{{forloop.counter}}" id="product_{{forloop.counter}}" name="product" style="width:100%;" onchange="getProductData('{{forloop.counter}}')" required>
+                                        <option value=""></option>
+                                        {% for item in items %}
+                                            <option value="{{item.id}}"
+                                            {% if item.id == food.food.id %}
+                                                selected
+                                            {% endif %}
+                                            >{{item.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td><input type="text" value="{{food.quantity}}" name="qty" id="qty_{{forloop.counter}}" class="form-control" required onkeyup="getTotal('{{forloop.counter}}')"></td>
+                                <td>
+                                <input type="text" name="rate" value="{{food.food.sale_price}}" id="rate_{{forloop.counter}}" class="form-control" disabled autocomplete="off">
+                                <input type="hidden" name="rate_value" value="{{food.food.sale_price}}" id="rate_value_{{forloop.counter}}" class="form-control" autocomplete="off">
+                                </td>
+                                <td>
+                                <input type="text" name="amount" value="{{food.food.sale_price}}" id="amount_{{forloop.counter}}" class="form-control" disabled autocomplete="off">
+                                <input type="hidden" name="amount_value" value="{{food.food.sale_price}}" id="amount_value_{{forloop.counter}}" class="form-control" autocomplete="off">
+                                </td>
+                                <td><button type="button" class="btn btn-default" onclick="removeRow('1')"><i class="fa fa-close"></i></button></td>
+                            </tr>
+                        {% endfor %}
                    </tbody>
                 </table>
                 <br /> <br/>
                 <div class="col-md-6 col-xs-12 pull pull-right">
+                    <div class="form-group">
+                        <label for="gross_amount" class="col-sm-5 control-label">Note</label>
+                        <div class="col-sm-7">
+                          <input type="text" value="{{order.note}}" class="form-control" name="note" autocomplete="off">
+                        </div>
+                      </div>
                   <div class="form-group">
                     <label for="gross_amount" class="col-sm-5 control-label">Gross Amount</label>
                     <div class="col-sm-7">
-                      <input type="text" class="form-control" id="gross_amount" name="gross_amount" disabled autocomplete="off">
-                      <input type="hidden" class="form-control" id="gross_amount_value" name="gross_amount_value" autocomplete="off">
+                      <input type="text" value="{{order.total_amount}}" class="form-control" id="gross_amount" name="gross_amount" disabled autocomplete="off">
+                      <input type="hidden" value="{{order.total_amount}}" class="form-control" id="gross_amount_value" name="gross_amount_value" autocomplete="off">
                     </div>
                   </div>
                 <div class="form-group">
@@ -82,8 +96,8 @@
                   <div class="form-group">
                     <label for="net_amount" class="col-sm-5 control-label">Net Amount</label>
                     <div class="col-sm-7">
-                      <input type="text" class="form-control" id="net_amount" name="net_amount" disabled autocomplete="off">
-                      <input type="hidden" class="form-control" id="net_amount_value" name="net_amount_value" autocomplete="off">
+                      <input type="text"  value="{{order.total_amount}}" class="form-control" id="net_amount" name="net_amount" disabled autocomplete="off">
+                      <input type="hidden" value="{{order.total_amount}}" class="form-control" id="net_amount_value" name="net_amount_value" autocomplete="off">
                     </div>
                   </div>
                 </div>
@@ -91,7 +105,7 @@
               <div class="box-footer">
                 <input type="hidden" name="service_charge_rate" value="" autocomplete="off">
                 <input type="hidden" name="vat_charge_rate" value="0" autocomplete="off">
-                <button type="submit" class="btn btn-primary">Create Order</button>
+                <button type="submit" class="btn btn-primary">Update Order</button>
                 <a href="/dashboard/admin/orders/" class="btn btn-warning">Back</a>
               </div>
             </form>

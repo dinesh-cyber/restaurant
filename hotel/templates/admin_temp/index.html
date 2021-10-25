@@ -150,8 +150,7 @@
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Customer Name</th>
+                        <th scope="col">Created by</th>
                         <th scope="col">Type</th>
                         <th scope="col">Order Timestamp</th>
                         <th scope="col">Total Amount</th>
@@ -162,8 +161,7 @@
                     {% for order in latest_orders %}
                     <tr>
                         <td>{{order.id}}</td>
-                        <td>{{order.location}}</td>
-                        <td>{{order.customer.customer.first_name}} {{order.customer.customer.last_name}}</td>
+                        <td>{{order.staff.staff_id.first_name}} {{order.staff.staff_id.last_name}}</td>
                         <td>Delivery</td>
                         <td>{{order.order_timestamp}}</td>
                         <td>{{order.total_amount}}</td>
