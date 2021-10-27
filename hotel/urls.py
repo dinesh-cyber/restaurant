@@ -44,5 +44,10 @@ urlpatterns = [
 
     url(r'^dashboard/delivery_boy/$', views.delivery_boy, name='delivery_boy'),
     url(r'^foods/$', views.get_foods, name='foods'),
-    url(r'^foods/(?P<food_id>\d+)/$', views.get_food_data, name='food_data')
+    url(r'^foods/(?P<food_id>\d+)/$', views.get_food_data, name='food_data'),
+    url(r'^dashboard/admin/stock-items/$',
+        views.stock_items_admin, name='stock_items_admin'),
+    url(r'^dashboard/admin/stock-credit/$',
+        views.stock_items_credit_admin, name='stock_items_credit_admin'),
+
 ]

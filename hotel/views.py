@@ -462,3 +462,17 @@ def get_foods(request):
 def get_food_data(request, food_id):
     items = Food.objects.filter(id=food_id).values()
     return JsonResponse({"models_to_return": list(items)})
+
+
+@login_required
+@staff_member_required
+def stock_items_admin(request):
+    foods = Food.objects.filter()
+    return render(request, 'admin_temp/stock-items.html', {'foods': foods})
+
+
+@login_required
+@staff_member_required
+def stock_items_credit_admin(request):
+    foods = Food.objects.filter()
+    return render(request, 'admin_temp/stock-credit.html', {'foods': foods})

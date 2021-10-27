@@ -173,3 +173,34 @@ class OrderContent(models.Model):
 class DeliveryBoy(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     delivery_boy = models.ForeignKey(Staff, on_delete=models.CASCADE)
+
+
+class RawItem(models.Model):
+    name = models.CharField(max_length=250)
+    description = models.CharField(max_length=250)
+    created_date = models.DateTimeField(default=timezone.now)
+
+
+class stock(models.Model):
+    credit = 'CREDIT'
+    debit = 'DEBIT'
+
+    entryType = (
+        (credit, credit),
+        (debit, debit),
+    )
+    kgs = 'Kgs'
+    grms = 'Grms'
+
+    weight_types = (
+        (kgs, kgs),
+        (grms, grms),
+    )
+
+    name = models.ForeignKey(RawItem, on_delete=models.CASCADE)
+    description = models.CharField(max_length=250)
+    quantity = models.IntegerField(default=0)
+    weight_types = models.CharField(max_length=50, choices=weight_types)
+    bill_no = models.IntegerField(default=0)
+    entry_type = models.CharField(max_length=50, choices=entryType)
+    created_date = models.DateTimeField(default=timezone.now)
