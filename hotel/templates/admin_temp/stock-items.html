@@ -38,6 +38,7 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Qty</th>
+                                <th>weight_types</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,7 +46,8 @@
                             <tr>
                                 <td>{{RawItem.id}}</td>
                                 <td>{{RawItem.name}}</td>
-                                <td>{{RawItem.descrption}}</td>
+                                <td>{{RawItem.available}}</td>
+                                <td>{{RawItem.weight_types}}</td>
                                 <td> <a href="/dashboard/admin/stock/item-details/{{RawItem.id}}">View History</a></td>
 
 

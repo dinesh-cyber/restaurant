@@ -180,6 +180,9 @@ class RawItem(models.Model):
     description = models.CharField(max_length=250)
     created_date = models.DateTimeField(default=timezone.now)
 
+    @property
+    def category(self):
+        print('dineh')
 
 class stock(models.Model):
     credit = 'CREDIT'

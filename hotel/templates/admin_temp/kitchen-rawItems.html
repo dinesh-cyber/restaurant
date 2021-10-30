@@ -32,16 +32,18 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Date</th>
+                                <th>name</th>
                                 <th>Sales</th>
                                 <th>Expenses</th>
+                                <th>qnty in</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for stock in stocks %}
                             <tr>
                                 <td>{{stock.id}}</td>
-                                <td>{{stock.name}}</td>
+                                <td>{{stock.name.name}}</td>
                                 <td>{{stock.quantity}}</td>
                                 <td>{{stock.entry_type}}</td>
                                 <td>{{stock.weight_types}}</td>

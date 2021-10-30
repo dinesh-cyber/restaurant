@@ -61,11 +61,19 @@ def dashboard_admin(request):
     sales = 0
     week = Order.objects.filter(order_timestamp__year=today.year).filter(
         order_timestamp__week=today.isocalendar()[1]).count()
+    week_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
+        order_timestamp__week=today.isocalendar()[1]).values_list('total_amount', flat=True))
     year = Order.objects.filter(order_timestamp__year=today.year).count()
+    year_amount = sum(Order.objects.filter(order_timestamp__year=today.year).values_list('total_amount', flat=True))
+
     month = Order.objects.filter(order_timestamp__year=today.year).filter(
         order_timestamp__month=today.month).count()
-    today = Order.objects.filter(order_timestamp__year=today.year).filter(
+    month_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
+        order_timestamp__month=today.month).values_list('total_amount', flat=True))
+    today__ = Order.objects.filter(order_timestamp__year=today.year).filter(
         order_timestamp__date=today).count()
+    today_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
+        order_timestamp__date=today).values_list('total_amount', flat=True))
     for order in completed_orders:
         sales += order.total_amount
 
@@ -78,9 +86,13 @@ def dashboard_admin(request):
         'latest_orders': latest_orders,
         'datas': datas,
         'week': week,
+        'week_amount':week_amount,
         'month': month,
+        'month_amount':month_amount,
         'year': year,
-        'today': today
+        'year_amount': year_amount,
+        'today': today__,
+        'today_amount':today_amount
     }
     return render(request, 'admin_temp/index.html', context)
 
@@ -464,11 +476,35 @@ def get_food_data(request, food_id):
     return JsonResponse({"models_to_return": list(items)})
 
 
+from django.db.models import F
+from .models import stock
+
 @login_required
 @staff_member_required
 def stock_items_admin(request):
-    RawItems = RawItem.objects.filter()
-    return render(request, 'admin_temp/stock-items.html', {'RawItems': RawItems})
+    RawItems = RawItem.objects.all()
+    final_items =[]
+    for i in RawItems:
+        stocks = stock.objects.filter(name=i.id)
+        credit = 0
+        debit = 0
+        name = ''
+        weight_types = ''
+        for stock_obj in stocks:
+            if stock_obj.entry_type == 'CREDIT':
+                credit += stock_obj.quantity
+            else:
+                debit += stock_obj.quantity
+            name = stock_obj.name.name
+            weight_types = stock_obj.weight_types
+        raw_items = {
+            "name" : name,
+            "available" : credit - debit,
+            "id" : i.id,
+            "weight_types":weight_types
+        }
+        final_items.append(raw_items)
+    return render(request, 'admin_temp/stock-items.html', {'RawItems': final_items})
 
 
 @login_required
