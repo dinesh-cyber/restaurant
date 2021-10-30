@@ -1,3 +1,5 @@
+from .models import stock
+from django.db.models import F
 import datetime
 from django.http import JsonResponse
 import json
@@ -39,7 +41,7 @@ def signup(request):
             customer = Customer.objects.create(
                 customer=user, address=address, contact=contact)
             customer.save()
-            return redirect('http://localhost:8000/accounts/login/')
+            return redirect('http://18.221.132.23:8000/accounts/login/')
 
     else:
         form = SignUpForm()
@@ -64,7 +66,8 @@ def dashboard_admin(request):
     week_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
         order_timestamp__week=today.isocalendar()[1]).values_list('total_amount', flat=True))
     year = Order.objects.filter(order_timestamp__year=today.year).count()
-    year_amount = sum(Order.objects.filter(order_timestamp__year=today.year).values_list('total_amount', flat=True))
+    year_amount = sum(Order.objects.filter(
+        order_timestamp__year=today.year).values_list('total_amount', flat=True))
 
     month = Order.objects.filter(order_timestamp__year=today.year).filter(
         order_timestamp__month=today.month).count()
@@ -86,13 +89,13 @@ def dashboard_admin(request):
         'latest_orders': latest_orders,
         'datas': datas,
         'week': week,
-        'week_amount':week_amount,
+        'week_amount': week_amount,
         'month': month,
-        'month_amount':month_amount,
+        'month_amount': month_amount,
         'year': year,
         'year_amount': year_amount,
         'today': today__,
-        'today_amount':today_amount
+        'today_amount': today_amount
     }
     return render(request, 'admin_temp/index.html', context)
 
@@ -270,6 +273,7 @@ def add_food(request):
         content = request.POST['content']
         base_price = request.POST['base_price']
         discount = request.POST['discount']
+        category = request.POST['category']
         sale_price = (100 - float(discount)) * float(base_price) / 100
         image = request.FILES['image']
         fs = FileSystemStorage()
@@ -280,7 +284,7 @@ def add_food(request):
             error_msg = "Please enter valid details"
             return render(request, 'admin_temp/foods.html', {'foods': foods, 'error_msg': error_msg})
 
-        food = Food.objects.create(name=name, course=course, status=status, content_description=content,
+        food = Food.objects.create(name=name, category=category, course=course, status=status, content_description=content,
                                    base_price=base_price, discount=discount, sale_price=sale_price, image=filename)
         food.save()
         foods = Food.objects.filter()
@@ -476,14 +480,11 @@ def get_food_data(request, food_id):
     return JsonResponse({"models_to_return": list(items)})
 
 
-from django.db.models import F
-from .models import stock
-
 @login_required
 @staff_member_required
 def stock_items_admin(request):
     RawItems = RawItem.objects.all()
-    final_items =[]
+    final_items = []
     for i in RawItems:
         stocks = stock.objects.filter(name=i.id)
         credit = 0
@@ -498,10 +499,10 @@ def stock_items_admin(request):
             name = stock_obj.name.name
             weight_types = stock_obj.weight_types
         raw_items = {
-            "name" : name,
-            "available" : credit - debit,
-            "id" : i.id,
-            "weight_types":weight_types
+            "name": name,
+            "available": credit - debit,
+            "id": i.id,
+            "weight_types": weight_types
         }
         final_items.append(raw_items)
     return render(request, 'admin_temp/stock-items.html', {'RawItems': final_items})
