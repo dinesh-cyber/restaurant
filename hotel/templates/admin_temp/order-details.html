@@ -29,6 +29,8 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Created by</th>
+                                <th>Order Status</th>
                                 <th>Order Time</th>
                                 <th>Amount</th>
                                 <th>Payment Method</th>
@@ -40,9 +42,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for order in orders %}
+
                             <tr>
                                 <td>{{order.id}}</td>
+                                <td>{{order.staff.staff_id.first_name}} {{order.staff.staff_id.last_name}}</td>
+                                <td>{% if order.if_cancelled == False %}
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                    {% else %}
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    {% endif %}
+                                </td>
                                 <td>{{order.order_timestamp}}</td>
                                 <td>{{order.total_amount}}</td>
                                 <td>{{order.payment_method}}</td>
@@ -120,9 +129,14 @@
                                                 type="button">Delivered</button>
                                         </span>
                                     </a>
+                                    <a href="/dashboard/admin/orders/view/{{order.id}}">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary " type="button">View order</button>
+                                        </span>
+                                    </a>
                                 </td>
                             </tr>
-                            {% endfor %}
+
                         </tbody>
                     </table>
                 </div>

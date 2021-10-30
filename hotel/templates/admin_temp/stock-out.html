@@ -1,0 +1,100 @@
+{% load static %}
+{% load static %}
+{% include "includes/base.html" %}
+{% include "includes/navbarheader.html" %}
+{% include "includes/navtop.html"%}
+{% include "includes/sidemenu.html" %}
+
+</nav>
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Stock Out Entry</h1>
+
+
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading" ->
+                    Stock Out
+                </div>
+
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <form method="POST" action="{% url 'hotel:stock_item_out_admin' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+
+                        <div class="form-group">
+                            <label for="course">Item</label>
+                            <select class="dropdown form-control" id="name" name="name" required>
+                                <option value='' selected="selected">Select Item </option>
+                                {% for item in RawItems %}
+                                <option value="{{item.id}}">{{item.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Description:</label>
+                            <input type="text" class="form-control" id="description" name="description">
+                        </div>
+                        <div class="form-group">
+                            <label for="base_price">Quantity:</label>
+                            <input type="number" class="form-control" name="quantity" value=0 min=0>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="status">Weight types:</label>
+                            <input type="hidden" class="form-control" value="DEBIT" id="entry_type" name="entry_type">
+                            <select class="dropdown form-control" id="weight_types" name="weight_types">
+                                <option value="Kgs">Kgs</option>
+                                <option value="Grms">Grms</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <span>{{error_msg}}</span>
+
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
+
+<!-- DataTables JavaScript -->
+<script src="{% static '/vendor/datatables/js/jquery.dataTables.min.js'%}"></script>
+<script src="{% static '/vendor/datatables-plugins/dataTables.bootstrap.min.js'%}"></script>
+<script src="{% static '/vendor/datatables-responsive/dataTables.responsive.js'%}"></script>
+
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+<script>
+    $(document).ready(function () {
+        $('#dataTables-example').DataTable({
+            responsive: true
+        });
+    });
+</script>
+
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
+<script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
+<script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
+
+</body>
+
+</html>
