@@ -201,6 +201,7 @@ class stock(models.Model):
     description = models.CharField(max_length=250)
     quantity = models.IntegerField(default=0)
     weight_types = models.CharField(max_length=50, choices=weight_types)
-    bill_no = models.IntegerField(default=0)
+    bill_no = models.CharField(max_length=1250)
     entry_type = models.CharField(max_length=50, choices=entryType)
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)

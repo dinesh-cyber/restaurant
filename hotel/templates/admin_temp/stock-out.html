@@ -10,10 +10,8 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Stock In Entry</h1>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addFood">
-                Stock Out Entry
-            </button>
+            <h1 class="page-header">Stock Out Entry</h1>
+
 
         </div>
         <!-- /.col-lg-12 -->
@@ -23,13 +21,12 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading" ->
-                    Stock In
+                    Stock Out
                 </div>
 
                 <!-- /.panel-heading -->
                 <div class="panel-body">
-                    <form method="POST" action="{% url 'hotel:stock_items_credit_admin' %}"
-                        enctype="multipart/form-data">
+                    <form method="POST" action="{% url 'hotel:stock_item_out_admin' %}" enctype="multipart/form-data">
                         {% csrf_token %}
 
 
@@ -50,14 +47,10 @@
                             <label for="base_price">Quantity:</label>
                             <input type="number" class="form-control" name="quantity" value=0 min=0>
                         </div>
-                        <div class="form-group">
-                            <label for="discount">Bill no:</label>
-                            <input type="text" class="form-control" id="bill_no" name="bill_no">
-                            <input type="hidden" class="form-control" value="CREDIT" id="entry_type" name="entry_type">
-                        </div>
 
                         <div class="form-group">
                             <label for="status">Weight types:</label>
+                            <input type="hidden" class="form-control" value="DEBIT" id="entry_type" name="entry_type">
                             <select class="dropdown form-control" id="weight_types" name="weight_types">
                                 <option value="Kgs">Kgs</option>
                                 <option value="Grms">Grms</option>

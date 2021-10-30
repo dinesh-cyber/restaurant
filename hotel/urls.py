@@ -49,5 +49,10 @@ urlpatterns = [
         views.stock_items_admin, name='stock_items_admin'),
     url(r'^dashboard/admin/stock-credit/$',
         views.stock_items_credit_admin, name='stock_items_credit_admin'),
+    url(r'^dashboard/admin/stock/item-details/(?P<orderID>\d+)/$',
+        views.stock_item_details_admin, name='stock_item_details_admin'),
+    url(r'^dashboard/admin/stock-out/$',
+        views.stock_item_out_admin, name='stock_item_out_admin'),
+
 
 ]

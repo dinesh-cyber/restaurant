@@ -18,7 +18,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.utils import timezone
 # from reportlab.pdfgen import canvas
-from .models import Customer, Comment, Order, Food, Data, Cart, OrderContent, Staff, DeliveryBoy
+from .models import Customer, Comment, Order, stock, Food, RawItem, Data, Cart, OrderContent, Staff, DeliveryBoy
 from .forms import SignUpForm
 
 
@@ -467,12 +467,57 @@ def get_food_data(request, food_id):
 @login_required
 @staff_member_required
 def stock_items_admin(request):
-    foods = Food.objects.filter()
-    return render(request, 'admin_temp/stock-items.html', {'foods': foods})
+    RawItems = RawItem.objects.filter()
+    return render(request, 'admin_temp/stock-items.html', {'RawItems': RawItems})
 
 
 @login_required
 @staff_member_required
 def stock_items_credit_admin(request):
-    foods = Food.objects.filter()
-    return render(request, 'admin_temp/stock-credit.html', {'foods': foods})
+    RawItems = RawItem.objects.all()
+    error_msg = ''
+    if request.method == "POST":
+        staff = Staff.objects.get(staff_id_id=request.user.id)
+        name = RawItem.objects.get(id=request.POST['name'])
+        description = request.POST['description']
+        quantity = request.POST['quantity']
+        weight_types = request.POST['weight_types']
+        entry_type = request.POST['entry_type']
+        bill_no = request.POST['bill_no']
+        if (quantity == '0'):
+            error_msg = "Please enter valid details"
+            return render(request, 'admin_temp/stock-credit.html', {'RawItems': RawItems, 'error_msg': error_msg})
+        stockCreate = stock.objects.create(
+            staff=staff, name=name, description=description, bill_no=bill_no, entry_type=entry_type, quantity=quantity, weight_types=weight_types)
+        stockCreate.save()
+        return redirect('/dashboard/admin/stock-items/')
+    return render(request, 'admin_temp/stock-credit.html', {'RawItems': RawItems, 'error_msg': error_msg})
+
+
+@login_required
+@staff_member_required
+def stock_item_details_admin(request, orderID):
+    stocks = stock.objects.filter(name=orderID)
+    return render(request, 'admin_temp/kitchen-rawItems.html', {'stocks': stocks})
+
+
+@login_required
+@staff_member_required
+def stock_item_out_admin(request):
+    RawItems = RawItem.objects.all()
+    error_msg = ''
+    if request.method == "POST":
+        staff = Staff.objects.get(staff_id_id=request.user.id)
+        name = RawItem.objects.get(id=request.POST['name'])
+        description = request.POST['description']
+        quantity = request.POST['quantity']
+        weight_types = request.POST['weight_types']
+        entry_type = request.POST['entry_type']
+        if (quantity == '0'):
+            error_msg = "Please enter valid details"
+            return render(request, 'admin_temp/stock-out.html', {'RawItems': RawItems, 'error_msg': error_msg})
+        stockCreate = stock.objects.create(
+            staff=staff, name=name, description=description, entry_type=entry_type, quantity=quantity, weight_types=weight_types)
+        stockCreate.save()
+        return redirect('/dashboard/admin/stock-items/')
+    return render(request, 'admin_temp/stock-out.html', {'RawItems': RawItems, 'error_msg': error_msg})
