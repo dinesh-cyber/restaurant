@@ -41,7 +41,7 @@ def signup(request):
             customer = Customer.objects.create(
                 customer=user, address=address, contact=contact)
             customer.save()
-            return redirect('http://localhost:8000/accounts/login/')
+            return redirect('http://18.221.132.23:8000/accounts/login/')
 
     else:
         form = SignUpForm()
