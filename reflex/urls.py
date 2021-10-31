@@ -21,15 +21,25 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from hotel import views
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('/')
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^accounts/login/$', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
-    # url(r'^accounts/logout/$', auth_views.logout, name='logout', kwargs={'next_page':'/'}),
+    url(r'^accounts/login/$',
+        auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
+    url(r'^accounts/logout/$', user_logout, name="logout"),
     url(r'^accounts/signup/$', views.signup, name='signup'),
     url(r'', include(('hotel.urls', 'hotel'), namespace='hotel')),
 ]
 
+
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

@@ -41,7 +41,7 @@ def signup(request):
             customer = Customer.objects.create(
                 customer=user, address=address, contact=contact)
             customer.save()
-            return redirect('http://18.221.132.23:8000/accounts/login/')
+            return redirect('http://localhost:8000/accounts/login/')
 
     else:
         form = SignUpForm()
@@ -61,22 +61,22 @@ def dashboard_admin(request):
     today = datetime.date.today()
     datas = Data.objects.filter().order_by('date')
     sales = 0
-    week = Order.objects.filter(order_timestamp__year=today.year).filter(
-        order_timestamp__week=today.isocalendar()[1]).count()
-    week_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
-        order_timestamp__week=today.isocalendar()[1]).values_list('total_amount', flat=True))
-    year = Order.objects.filter(order_timestamp__year=today.year).count()
-    year_amount = sum(Order.objects.filter(
-        order_timestamp__year=today.year).values_list('total_amount', flat=True))
+    # week = Order.objects.filter(order_timestamp__year=today.year).filter(
+    #     order_timestamp__week=today.isocalendar()[1]).count()
+    # week_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
+    #     order_timestamp__week=today.isocalendar()[1]).values_list('total_amount', flat=True))
+    # year = Order.objects.filter(order_timestamp__year=today.year).count()
+    # year_amount = sum(Order.objects.filter(
+    #     order_timestamp__year=today.year).values_list('total_amount', flat=True))
 
-    month = Order.objects.filter(order_timestamp__year=today.year).filter(
-        order_timestamp__month=today.month).count()
-    month_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
-        order_timestamp__month=today.month).values_list('total_amount', flat=True))
-    today__ = Order.objects.filter(order_timestamp__year=today.year).filter(
-        order_timestamp__date=today).count()
-    today_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
-        order_timestamp__date=today).values_list('total_amount', flat=True))
+    # month = Order.objects.filter(order_timestamp__year=today.year).filter(
+    #     order_timestamp__month=today.month).count()
+    # month_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
+    #     order_timestamp__month=today.month).values_list('total_amount', flat=True))
+    # today__ = Order.objects.filter(order_timestamp__year=today.year).filter(
+    #     order_timestamp__date=today).count()
+    # today_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
+    #     order_timestamp__date=today).values_list('total_amount', flat=True))
     for order in completed_orders:
         sales += order.total_amount
 
@@ -88,14 +88,14 @@ def dashboard_admin(request):
         'top_customers': top_customers,
         'latest_orders': latest_orders,
         'datas': datas,
-        'week': week,
-        'week_amount': week_amount,
-        'month': month,
-        'month_amount': month_amount,
-        'year': year,
-        'year_amount': year_amount,
-        'today': today__,
-        'today_amount': today_amount
+        'week':  0,
+        'week_amount': 0,
+        'month': 0,
+        'month_amount': 0,
+        'year': 0,
+        'year_amount': 0,
+        'today': 0,
+        'today_amount': 0
     }
     return render(request, 'admin_temp/index.html', context)
 
@@ -475,8 +475,10 @@ def get_foods(request):
 
 
 def get_food_data(request, food_id):
-    items = Food.objects.filter(id=food_id).values()
-    return JsonResponse({"models_to_return": list(items)})
+    items = Food.objects.filter(id=food_id)
+    items[0].discount = 0
+    # items[0]['discount'] = 0
+    return JsonResponse({"models_to_return": list(items.values())})
 
 
 @login_required

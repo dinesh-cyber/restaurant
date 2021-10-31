@@ -78,7 +78,7 @@ class Food(models.Model):
     content_description = models.TextField()
     base_price = models.FloatField()
     sale_price = models.FloatField(default=base_price)
-    discount = models.DecimalField(default=0, decimal_places=2, max_digits=5)
+    discount = models.FloatField()
     image = models.FileField(blank=True, null=True)
     num_order = models.IntegerField(default=0)
     category = models.CharField(max_length=50, choices=Category)
@@ -179,6 +179,7 @@ class RawItem(models.Model):
     name = models.CharField(max_length=250)
     description = models.CharField(max_length=250)
     created_date = models.DateTimeField(default=timezone.now)
+
 
 class stock(models.Model):
     credit = 'CREDIT'

@@ -110,7 +110,7 @@
         var count_table_tbody_tr = $("#product_info_table tbody tr").length;
         var row_id = count_table_tbody_tr + 1;
         $.ajax({
-            url: 'http://18.221.132.23:8000/foods/',
+            url: 'http://localhost:8000/foods/',
             type: 'get',
             dataType: 'json',
             success:function(response) {
@@ -149,7 +149,7 @@
     </script> -->
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>
-  var base_url = "http://18.221.132.23:8000/";
+  var base_url = "http://localhost:8000/";
   $(document).ready(function () {
     //   $(".select_group").select2();
     // $("#description").wysihtml5();

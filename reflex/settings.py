@@ -76,16 +76,16 @@ WSGI_APPLICATION = 'reflex.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
+
+    "default": {
+        "ENGINE": "djongo",
+        "NAME": "resturant_db",
     }
 
-    # "default": {
-    #     "ENGINE": "djongo",
-    #     "NAME": "resturant_db",
-    #     }
-    # }
 }
 
 
@@ -133,9 +133,8 @@ EMAIL_PORT = 465
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL='/accounts/login'
+LOGIN_URL = '/accounts/login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-

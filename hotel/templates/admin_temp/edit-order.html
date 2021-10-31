@@ -53,7 +53,8 @@
                 style="width:100%;" onchange="getProductData('{{forloop.counter}}')" required>
                 <option value=""></option>
                 {% for item in items %}
-                <option value="{{item.id}}" {% if item.id==food.food.id %} selected {% endif %}>{{item.name}}</option>
+                <option value="{{item.id}}" {% ifequal item.id food.food.id %} selected {% endifequal %}>{{item.name}}
+                </option>
                 {% endfor %}
               </select>
             </td>
@@ -129,7 +130,7 @@
         var count_table_tbody_tr = $("#product_info_table tbody tr").length;
         var row_id = count_table_tbody_tr + 1;
         $.ajax({
-            url: 'http://18.221.132.23:8000/foods/',
+            url: 'http://localhost:8000/foods/',
             type: 'get',
             dataType: 'json',
             success:function(response) {
@@ -168,7 +169,7 @@
     </script> -->
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>
-  var base_url = "http://18.221.132.23:8000/";
+  var base_url = "http://localhost:8000/";
   $(document).ready(function () {
     //   $(".select_group").select2();
     // $("#description").wysihtml5();
