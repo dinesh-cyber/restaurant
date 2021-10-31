@@ -25,8 +25,7 @@ SECRET_KEY = '^+=_@uh9j!0x%bt@r6x&q)agcqg*3t647=@^2ne-zkrjc&lf-s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1',
-                 '0.0.0.0', '172.19.15.104', '18.221.132.23']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '172.19.15.104']
 
 
 # Application definition
@@ -77,11 +76,17 @@ WSGI_APPLICATION = 'reflex.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "djongo",
-        "NAME": "resturant_db",
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+
+    # "default": {
+    #     "ENGINE": "djongo",
+    #     "NAME": "resturant_db",
+    #     }
+    # }
+}
 
 
 # Password validation
@@ -128,8 +133,9 @@ EMAIL_PORT = 465
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/accounts/login'
+LOGIN_URL='/accounts/login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+

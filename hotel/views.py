@@ -270,7 +270,7 @@ def add_food(request):
         name = request.POST['name']
         course = request.POST['course']
         status = request.POST['status']
-        content = request.POST['content']
+        content = request.POST.get('content', '')
         base_price = request.POST['base_price']
         discount = request.POST['discount']
         category = request.POST['category']
@@ -278,11 +278,10 @@ def add_food(request):
         image = request.FILES['image']
         fs = FileSystemStorage()
         filename = fs.save(image.name, image)
-
-        if (name == "") or (course is None) or (status is None) or (content == "") or (base_price == "") or (discount == ""):
-            foods = Food.objects.filter()
-            error_msg = "Please enter valid details"
-            return render(request, 'admin_temp/foods.html', {'foods': foods, 'error_msg': error_msg})
+        # if (name == "") or (course is None) or (status is None) or (content == "") or (base_price == "") or (discount == ""):
+        #     foods = Food.objects.filter()
+        #     error_msg = "Please enter valid details"
+        #     return render(request, 'admin_temp/foods.html', {'foods': foods, 'error_msg': error_msg})
 
         food = Food.objects.create(name=name, category=category, course=course, status=status, content_description=content,
                                    base_price=base_price, discount=discount, sale_price=sale_price, image=filename)
