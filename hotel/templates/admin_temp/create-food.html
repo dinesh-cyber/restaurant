@@ -1,0 +1,106 @@
+{% load static %}
+{% load static %}
+{% include "includes/base.html" %}
+{% include "includes/navbarheader.html" %}
+{% include "includes/navtop.html"%}
+{% include "includes/sidemenu.html" %}
+
+</nav>
+
+<div id="page-wrapper">
+    <div class="row">
+
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Create Dishes of the Restaurant
+                </div>
+
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <form method="POST" action="{% url 'hotel:add_food' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="course">Veg / NON-VEG:</label>
+                            <select class="dropdown form-control" id="category" name="category" required>
+                                <option value="VEG">VEG</option>
+                                <option value="NON-VEG">Non-VEG</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="course">Course:</label>
+                            <select class="dropdown select_group form-control" id="course" name="course" required>
+                                <option value=''>Select</option>
+                                {% for item in fCategories %}
+                                <option value="{{item.name}}">{{item.name}}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Content Description:</label>
+                            <input type="text" class="form-control" id="content" name="content">
+                        </div>
+                        <div class="form-group">
+                            <label for="base_price">Base Price:</label>
+                            <input type="number" class="form-control" id="base_price" name="base_price" value=0
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Image:</label>
+                            <input type="file" class="form-control" id="image" name="image" required>
+                        </div>
+                        <input value="Enabled" type="hidden" id="status" name="status">
+                        <input type="hidden" id="discount" name="discount" value=0>
+
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
+
+<!-- DataTables JavaScript -->
+<script src="{% static '/vendor/datatables/js/jquery.dataTables.min.js'%}"></script>
+<script src="{% static '/vendor/datatables-plugins/dataTables.bootstrap.min.js'%}"></script>
+<script src="{% static '/vendor/datatables-responsive/dataTables.responsive.js'%}"></script>
+
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+<script>
+    $(document).ready(function () {
+        $(".select_group").select2();
+        $('#dataTables-example').DataTable({
+            responsive: true
+        });
+    });
+</script>
+
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
+<script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
+<script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+</body>
+
+</html>

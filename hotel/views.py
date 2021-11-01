@@ -20,7 +20,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.utils import timezone
 # from reportlab.pdfgen import canvas
-from .models import Customer, Comment, Order, stock, Food, RawItem, Data, Cart, OrderContent, Staff, DeliveryBoy
+from .models import Customer, Comment, Order, stock, Food, RawItem, Data, Cart, OrderContent, Staff, DeliveryBoy, FoodCategories
 from .forms import SignUpForm
 
 
@@ -41,7 +41,7 @@ def signup(request):
             customer = Customer.objects.create(
                 customer=user, address=address, contact=contact)
             customer.save()
-            return redirect('http://18.221.132.23:8000/accounts/login/')
+            return redirect('/accounts/login/')
 
     else:
         form = SignUpForm()
@@ -58,25 +58,38 @@ def dashboard_admin(request):
     completed_orders = Order.objects.filter(payment_status="Completed")
     top_customers = Customer.objects.filter().order_by('-total_sale')
     latest_orders = Order.objects.filter().order_by('-order_timestamp')
-    today = datetime.date.today()
     datas = Data.objects.filter().order_by('date')
     sales = 0
-    # week = Order.objects.filter(order_timestamp__year=today.year).filter(
-    #     order_timestamp__week=today.isocalendar()[1]).count()
-    # week_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
-    #     order_timestamp__week=today.isocalendar()[1]).values_list('total_amount', flat=True))
-    # year = Order.objects.filter(order_timestamp__year=today.year).count()
-    # year_amount = sum(Order.objects.filter(
-    #     order_timestamp__year=today.year).values_list('total_amount', flat=True))
+    today_min = datetime.datetime.combine(
+        datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(
+        datetime.date.today(), datetime.time.max)
+    today_orders = Order.objects.filter(
+        order_timestamp__range=(today_min, today_max)).count()
 
-    # month = Order.objects.filter(order_timestamp__year=today.year).filter(
-    #     order_timestamp__month=today.month).count()
-    # month_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
-    #     order_timestamp__month=today.month).values_list('total_amount', flat=True))
-    # today__ = Order.objects.filter(order_timestamp__year=today.year).filter(
-    #     order_timestamp__date=today).count()
-    # today_amount = sum(Order.objects.filter(order_timestamp__year=today.year).filter(
-    #     order_timestamp__date=today).values_list('total_amount', flat=True))
+    today_amount = sum(Order.objects.filter(order_timestamp__range=(
+        today_min, today_max)).filter().values_list('total_amount', flat=True))
+
+    date = datetime.date.today()
+    start_week = date - datetime.timedelta(date.weekday())
+    start_month = datetime.date.today().replace(day=1)
+    start_year = datetime.date.today().replace(month=1, day=1)
+
+    week_min = datetime.datetime.combine(
+        start_week, datetime.time.min)
+    week = Order.objects.filter(
+        order_timestamp__range=(week_min, today_max)).count()
+    week_amount = sum(Order.objects.filter(order_timestamp__range=(
+        week_min, today_max)).filter().values_list('total_amount', flat=True))
+    month = Order.objects.filter(
+        order_timestamp__range=(start_month, today_max)).count()
+    month_amount = sum(Order.objects.filter(order_timestamp__range=(
+        start_month, today_max)).filter().values_list('total_amount', flat=True))
+    year = Order.objects.filter(
+        order_timestamp__range=(start_year, today_max)).count()
+    year_amount = sum(Order.objects.filter(order_timestamp__range=(
+        start_year, today_max)).filter().values_list('total_amount', flat=True))
+
     for order in completed_orders:
         sales += order.total_amount
 
@@ -88,14 +101,14 @@ def dashboard_admin(request):
         'top_customers': top_customers,
         'latest_orders': latest_orders,
         'datas': datas,
-        'week':  0,
-        'week_amount': 0,
-        'month': 0,
-        'month_amount': 0,
-        'year': 0,
-        'year_amount': 0,
-        'today': 0,
-        'today_amount': 0
+        'week':  week,
+        'week_amount': week_amount,
+        'month': month,
+        'month_amount': month_amount,
+        'year': year,
+        'year_amount': year_amount,
+        'today': today_orders,
+        'today_amount': today_amount
     }
     return render(request, 'admin_temp/index.html', context)
 
@@ -138,7 +151,16 @@ def create_orders_admin(request):
 @staff_member_required
 def foods_admin(request):
     foods = Food.objects.filter()
-    return render(request, 'admin_temp/foods.html', {'foods': foods})
+    fCategories = FoodCategories.objects.filter()
+    return render(request, 'admin_temp/foods.html', {'foods': foods, 'fCategories': fCategories})
+
+
+@login_required
+@staff_member_required
+def food_item_create(request):
+    foods = Food.objects.filter()
+    fCategories = FoodCategories.objects.filter()
+    return render(request, 'admin_temp/create-food.html', {'foods': foods, 'fCategories': fCategories})
 
 
 @login_required

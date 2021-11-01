@@ -7,6 +7,9 @@
 <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
 <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
 <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 </nav>
 
 <div id="page-wrapper">
@@ -130,7 +133,7 @@
         var count_table_tbody_tr = $("#product_info_table tbody tr").length;
         var row_id = count_table_tbody_tr + 1;
         $.ajax({
-            url: 'http://18.221.132.23:8000/foods/',
+            url: window.location.origin + '/foods/',
             type: 'get',
             dataType: 'json',
             success:function(response) {
@@ -169,7 +172,7 @@
     </script> -->
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>
-  var base_url = "http://18.221.132.23:8000/";
+  var base_url = window.location.origin + '/';
   $(document).ready(function () {
     //   $(".select_group").select2();
     // $("#description").wysihtml5();

@@ -73,7 +73,7 @@ class Food(models.Model):
     )
 
     name = models.CharField(max_length=250)
-    course = models.CharField(max_length=50, choices=COURSE)
+    course = models.CharField(max_length=100)
     status = models.CharField(max_length=50, choices=STATUS)
     content_description = models.TextField()
     base_price = models.FloatField()
@@ -204,4 +204,9 @@ class stock(models.Model):
     bill_no = models.CharField(max_length=1250)
     entry_type = models.CharField(max_length=50, choices=entryType)
     staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(default=timezone.now)
+
+
+class FoodCategories(models.Model):
+    name = models.CharField(max_length=250)
     created_date = models.DateTimeField(default=timezone.now)

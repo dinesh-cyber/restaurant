@@ -53,6 +53,8 @@ urlpatterns = [
         views.stock_item_details_admin, name='stock_item_details_admin'),
     url(r'^dashboard/admin/stock-out/$',
         views.stock_item_out_admin, name='stock_item_out_admin'),
+    url(r'^dashboard/admin/food/create/$',
+        views.food_item_create, name='food_item_create'),
 
 
 ]

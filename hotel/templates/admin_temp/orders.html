@@ -31,12 +31,12 @@
                                 <th>ID</th>
                                 <th>Order Time</th>
                                 <th>Amount</th>
-                                <th>Payment Method</th>
                                 <th>Payment Status</th>
                                 <th>Delivery Status</th>
                                 <th>Delivery Boy</th>
                                 <th>Confirm Payment</th>
                                 <th>Confirm Delivery</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,7 +45,6 @@
                                 <td>{{order.id}}</td>
                                 <td>{{order.order_timestamp}}</td>
                                 <td>{{order.total_amount}}</td>
-                                <td>{{order.payment_method}}</td>
                                 <td>{% if order.payment_status == 'Completed' %}
                                     <span class="label label-success">Paid</span>
                                     {% else %}
@@ -118,6 +117,20 @@
                                             <button
                                                 class="btn btn-primary {%ifequal order.delivery_status 'Completed'%}disabled{%endifequal%}"
                                                 type="button">Delivered</button>
+                                        </span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="/dashboard/admin/orders/edit/{{order.id}}">
+                                        <span class="input-group-btn">
+                                            <button
+                                                class="btn btn-primary {%ifequal order.payment_status 'Completed'%}disabled{%endifequal%}"
+                                                type="button">Edit</button>
+                                        </span>
+                                    </a>
+                                    <a href="/dashboard/admin/orders/view/{{order.id}}">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-info" type="button">View</button>
                                         </span>
                                     </a>
                                 </td>
