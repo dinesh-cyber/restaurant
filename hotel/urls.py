@@ -55,6 +55,8 @@ urlpatterns = [
         views.stock_item_out_admin, name='stock_item_out_admin'),
     url(r'^dashboard/admin/food/create/$',
         views.food_item_create, name='food_item_create'),
+    url(r'^order/print/(?P<order_id>\d+)/$',
+        views.get_order_data, name='get_order_data'),
 
 
 ]

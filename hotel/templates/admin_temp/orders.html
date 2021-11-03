@@ -133,6 +133,10 @@
                                             <button class="btn btn-info" type="button">View</button>
                                         </span>
                                     </a>
+                                    <button onclick="getProductData('{{order.id}}')" class="btn btn-default"
+                                        type="button">Print</button>
+
+
                                 </td>
                             </tr>
                             {% endfor %}
@@ -166,7 +170,26 @@
         $('#dataTables-example').DataTable({
             responsive: true
         });
+
+
     });
+    function getProductData(order_id) {
+        var base_url = window.location.origin + '/';
+        $.ajax({
+            url: base_url + 'order/print/' + order_id,
+            type: 'get',
+            dataType: 'html',
+            success: function (response) {
+                console.log(183, response)
+                var printWin = window.open("", "getProductData");
+                printWin.document.open();
+                printWin.document.write(response);
+                printWin.document.close();
+                printWin.print()
+            } // /success
+        });
+    }
+
 </script>
 
 <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>

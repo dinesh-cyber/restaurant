@@ -581,3 +581,13 @@ def stock_item_out_admin(request):
         stockCreate.save()
         return redirect('/dashboard/admin/stock-items/')
     return render(request, 'admin_temp/stock-out.html', {'RawItems': RawItems, 'error_msg': error_msg})
+
+
+def get_order_data(request, order_id):
+    print(order_id)
+    orders = Order.objects.get(id=order_id)
+    items = Food.objects.all()
+    query = "select * from Order"
+    for p in Order.objects.raw(query):
+        print(p.id)
+    return render(request, 'admin_temp/print-order.html', {'items': items, 'order': orders})
