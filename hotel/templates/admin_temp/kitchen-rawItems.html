@@ -9,7 +9,7 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Hotel Sales Information</h1>
+            <h1 class="page-header">Stock detail Information</h1>
             <a href="/dashboard/admin/stock-credit" class="btn btn-primary">
                 Add Stock
             </a>
@@ -33,8 +33,9 @@
                             <tr>
                                 <th>ID</th>
                                 <th>name</th>
-                                <th>Sales</th>
-                                <th>Expenses</th>
+                                <th>Qty</th>
+                                <th>In / Out</th>
+                                <th>Amount</th>
                                 <th>qnty in</th>
                                 <th>Date</th>
                             </tr>
@@ -46,6 +47,7 @@
                                 <td>{{stock.name.name}}</td>
                                 <td>{{stock.quantity}}</td>
                                 <td>{{stock.entry_type}}</td>
+                                <td>{{stock.amount}}</td>
                                 <td>{{stock.weight_types}}</td>
                                 <td>
                                     {{stock.created_date}}

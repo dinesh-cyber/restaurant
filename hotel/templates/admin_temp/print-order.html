@@ -3,22 +3,17 @@
     <center id="top">
         <div class="logo"></div>
         <div class="info">
-            <h2>SBISTechs Inc</h2>
+            <h2>Green Bavarchi family restaurant</h2>
+            <p>
+                Order No : {{order.oid}}</br>
+                Date : {{order.order_timestamp}}
+            </p>
         </div>
         <!--End Info-->
     </center>
     <!--End InvoiceTop-->
 
-    <div id="mid">
-        <div class="info">
-            <h2>Contact Info</h2>
-            <p>
-                Address : street city, state 0000</br>
-                Email : JohnDoe@gmail.com</br>
-                Phone : 555-555-5555</br>
-            </p>
-        </div>
-    </div>
+
     <!--End Invoice Mid-->
 
     <div id="bot">
@@ -32,16 +27,19 @@
                     <td class="Hours">
                         <h2>Qty</h2>
                     </td>
+                    <td class="Hours">
+                        <h2>Rate</h2>
+                    </td>
                     <td class="Rate">
                         <h2>Sub Total</h2>
                     </td>
                 </tr>
-                {{items}}
+                {{order.0}}
                 {% for food in order.cart.all %}
                 <tr class="service">
                     <td class="tableitem">
                         <p class="itemtext">
-                            {{food.fname}}
+                            {{food.food}}
                         </p>
                     </td>
                     <td class="tableitem">
@@ -50,29 +48,38 @@
                     <td class="tableitem">
                         <p class="itemtext">{{food.food.sale_price}}</p>
                     </td>
+                    <td class="tableitem">
+                        <p class="itemtext"> {% widthratio food.food.sale_price 1 food.quantity %} </p>
+                    </td>
                 </tr>
 
                 {% endfor %}
+                <tr class="service">
+                    <td class="tableitem">
+                        <p class="itemtext">
+                            Discount
+                        </p>
+                    </td>
+                    <td>
+                    </td>
+                    <td> -
+                    </td>
+                    <td class="tableitem">
+                        <p class="itemtext">{{order.discount}}</p>
+                    </td>
+                </tr>
+
 
 
 
                 <tr class="tabletitle">
                     <td></td>
-                    <td class="Rate">
-                        <h2>tax</h2>
-                    </td>
-                    <td class="payment">
-                        <h2>$419.25</h2>
-                    </td>
-                </tr>
-
-                <tr class="tabletitle">
                     <td></td>
                     <td class="Rate">
                         <h2>Total</h2>
                     </td>
                     <td class="payment">
-                        <h2>$3,644.25</h2>
+                        <h2>{{order.total_amount}}</h2>
                     </td>
                 </tr>
 
@@ -81,8 +88,7 @@
         <!--End Table-->
 
         <div id="legalcopy">
-            <p class="legal"><strong>Thank you for your business!</strong>  Payment is expected within 31 days; please
-                process this invoice within that time. There will be a 5% interest charge per month on late invoices.
+            <p class="legal"><strong>Thank you for your visit!</strong> 
             </p>
         </div>
 
@@ -135,6 +141,7 @@
     #bot {
         /* Targets all id with 'col-' */
         border-bottom: 1px solid #EEE;
+
     }
 
     #top {
@@ -147,6 +154,7 @@
 
     #bot {
         min-height: 50px;
+        text-align: center;
     }
 
     #top .logo {

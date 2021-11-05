@@ -138,6 +138,7 @@ class Order(models.Model):
     delivery_boy = models.ForeignKey(
         Staff, on_delete=models.CASCADE, null=True, blank=True)
     note = models.TextField()
+    discount = models.FloatField(default=0)
 
     def confirmOrder(self):
         self.order_timestamp = timezone.localtime().__str__()[:19]
@@ -204,6 +205,7 @@ class stock(models.Model):
     bill_no = models.CharField(max_length=1250)
     entry_type = models.CharField(max_length=50, choices=entryType)
     staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    amount = models.FloatField(default=0)
     created_date = models.DateTimeField(default=timezone.now)
 
 

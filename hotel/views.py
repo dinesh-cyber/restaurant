@@ -133,6 +133,10 @@ def orders_admin(request):
 @staff_member_required
 def order_view_admin(request, orderID):
     orders = Order.objects.get(id=orderID)
+    orderTime = orders.order_timestamp
+    dt = datetime.datetime.date(orderTime)
+    orders.oid = str(dt.year) + str(dt.month) + str(dt.day) + str(orders.id)
+
     cart = orders.cart.all()
     dBoys = Staff.objects.filter(role='Delivery Boy')
     return render(request, 'admin_temp/order-details.html', {'order': orders, 'dBoys': dBoys, 'cart': cart})
@@ -462,7 +466,8 @@ def order_view_edit(request, orderID):
         food = cart.food
         order = Order.objects.filter(id=orderID).update(staff=staff, payment_status="Pending",
                                                         note=request.POST.get(
-                                                            "note"),
+                                                            "note"), discount=request.POST.get(
+                                                            "discount"),
                                                         delivery_status="Pending", total_amount=request.POST.get("net_amount_value"),
                                                         payment_method="Cash On Delivery")
         orders.cart.clear()
@@ -484,7 +489,7 @@ def create_orders_admin(request):
             created_cart.append(cart)
         food = cart.food
         order = Order.objects.create(staff=staff, payment_status="Pending",
-                                     delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), payment_method="Cash On Delivery")
+                                     delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), discount=request.POST.get("discount"), payment_method="Cash On Delivery")
         for cart in created_cart:
             order.cart.add(cart)
         return redirect('/dashboard/admin/orders/')
@@ -544,11 +549,12 @@ def stock_items_credit_admin(request):
         weight_types = request.POST['weight_types']
         entry_type = request.POST['entry_type']
         bill_no = request.POST['bill_no']
+        amount = request.POST['amount']
         if (quantity == '0'):
             error_msg = "Please enter valid details"
             return render(request, 'admin_temp/stock-credit.html', {'RawItems': RawItems, 'error_msg': error_msg})
         stockCreate = stock.objects.create(
-            staff=staff, name=name, description=description, bill_no=bill_no, entry_type=entry_type, quantity=quantity, weight_types=weight_types)
+            staff=staff, name=name, amount=amount, description=description, bill_no=bill_no, entry_type=entry_type, quantity=quantity, weight_types=weight_types)
         stockCreate.save()
         return redirect('/dashboard/admin/stock-items/')
     return render(request, 'admin_temp/stock-credit.html', {'RawItems': RawItems, 'error_msg': error_msg})
@@ -585,9 +591,9 @@ def stock_item_out_admin(request):
 
 def get_order_data(request, order_id):
     print(order_id)
-    orders = Order.objects.get(id=order_id)
+    order = Order.objects.get(id=order_id)
+    orderTime = order.order_timestamp
+    dt = datetime.datetime.date(orderTime)
+    order.oid = str(dt.year) + str(dt.month) + str(dt.day) + str(order.id)
     items = Food.objects.all()
-    query = "select * from Order"
-    for p in Order.objects.raw(query):
-        print(p.id)
-    return render(request, 'admin_temp/print-order.html', {'items': items, 'order': orders})
+    return render(request, 'admin_temp/print-order.html', {'items': items, 'order': order})
