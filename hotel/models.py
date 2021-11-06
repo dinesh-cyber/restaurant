@@ -139,6 +139,7 @@ class Order(models.Model):
         Staff, on_delete=models.CASCADE, null=True, blank=True)
     note = models.TextField()
     discount = models.FloatField(default=0)
+    table_name = models.IntegerField(default=1)
 
     def confirmOrder(self):
         self.order_timestamp = timezone.localtime().__str__()[:19]

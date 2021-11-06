@@ -123,7 +123,7 @@ def users_admin(request):
 @login_required
 @staff_member_required
 def orders_admin(request):
-    orders = Order.objects.filter()
+    orders = Order.objects.filter().order_by('-updated_date')
     dBoys = Staff.objects.filter(role='Delivery Boy')
     return render(request, 'admin_temp/orders.html', {'orders': orders, 'dBoys': dBoys})
 
@@ -481,7 +481,7 @@ def create_orders_admin(request):
             created_cart.append(cart)
         food = cart.food
         order = Order.objects.create(staff=staff, payment_status="Pending",
-                                     delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), discount=request.POST.get("discount"), payment_method="Cash On Delivery")
+                                     delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), discount=request.POST.get("discount"), table_name=request.POST.get("table_name"), payment_method="Cash On Delivery")
         for cart in created_cart:
             order.cart.add(cart)
         return redirect('/dashboard/admin/orders/')
