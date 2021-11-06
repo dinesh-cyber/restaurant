@@ -44,7 +44,12 @@
                             <tr>
                                 <td>{{order.id}}</td>
                                 <td>{{order.order_timestamp}}</td>
-                                <td>{{order.total_amount}}</td>
+                                <td>
+                                    {% for food in order.cart.all %}
+                                    *{{food.food}} <br>
+                                    {% endfor %}
+                                    <strong>{{order.total_amount}}</strong>
+                                </td>
                                 <td>{% if order.payment_status == 'Completed' %}
                                     <span class="label label-success">Paid</span>
                                     {% else %}
