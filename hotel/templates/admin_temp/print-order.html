@@ -2,8 +2,8 @@
 
     <center id="top">
         <div class="info">
-            <h2>Green Bavarchi family restaurant A/C</h2>
-            <p style="padding: 0px;font-size: 10px;margin-top: -6px;">M.G ROAD, SURYAPET <br>
+            <h2 style="font-size: 16px;">Green Bavarchi family restaurant A/C</h2>
+            <p style="padding: 0px;font-size: 12px;margin-top: -6px;">M.G ROAD, SURYAPET <br>
                 Cell: 9705130400</p>
             <table style="font-size: 10px;margin-top: 10px;margin-bottom: 6px; font-weight: bold;">
                 <tr>
@@ -29,16 +29,16 @@
         <div id="table">
             <table>
                 <tr class="tabletitle">
-                    <td class="item">
+                    <td class="item" style="font-size: 11px;">
                         <h2>Item</h2>
                     </td>
-                    <td class="Hours">
+                    <td class="Hours" style="font-size: 11px;">
                         <h2>Qty</h2>
                     </td>
-                    <td class="Hours">
+                    <td class="Hours" style="font-size: 11px;">
                         <h2>Rate</h2>
                     </td>
-                    <td class="Rate">
+                    <td class="Rate" style="font-size: 11px;">
                         <h2>Amount</h2>
                     </td>
                 </tr>
@@ -66,10 +66,8 @@
                     <td class="tableitem">
 
                     </td>
-                    <td colspan="2">
-                        <p class="itemtext">
-                            Total
-                        </p>
+                    <td colspan="2" style="font-size: 10px;">
+                        <strong>Total</strong>
                     </td>
                     <td class="tableitem">
                         <p class="itemtext">{{ order.discount | add:order.total_amount }}
@@ -80,10 +78,8 @@
                     <td class="tableitem">
 
                     </td>
-                    <td colspan="2">
-                        <p class="itemtext">
-                            dis
-                        </p>
+                    <td colspan="2" style="font-size: 10px;">
+                        dis
                     </td>
                     <td class="tableitem">
                         <p class="itemtext">{{order.discount}}</p>
@@ -96,10 +92,10 @@
                 <tr class="tabletitle">
                     <td></td>
                     <td class="Rate" colspan="2">
-                        <h2>Grand Total</h2>
+                        <p>Grand Total</p>
                     </td>
                     <td class="payment">
-                        <h2>{{order.total_amount}}</h2>
+                        <p>{{order.total_amount}}</p>
                     </td>
                 </tr>
 
@@ -120,9 +116,8 @@
 <style>
     #invoice-POS {
         box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
-        padding: 2mm;
         margin: 0 auto;
-        width: 54mm;
+        width: 60mm;
         background: #FFF;
     }
 
@@ -152,7 +147,7 @@
     }
 
     p {
-        font-size: .7em;
+        font-size: 12px !important;
         line-height: 1.2em;
         color: #000 !important;
         font-weight: bolder;

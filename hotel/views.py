@@ -117,7 +117,6 @@ def dashboard_admin(request):
 @staff_member_required
 def users_admin(request):
     customers = Customer.objects.filter()
-    print(customers)
     return render(request, 'admin_temp/users.html', {'users': customers})
 
 
@@ -147,7 +146,6 @@ def order_view_admin(request, orderID):
 def create_orders_admin(request):
     orders = Order.objects.filter()
     dBoys = Staff.objects.filter(role='Delivery Boy')
-    print(dBoys)
     return render(request, 'admin_temp/orders.html', {'orders': orders, 'dBoys': dBoys})
 
 
@@ -176,7 +174,6 @@ def sales_admin(request):
 
 def menu(request):
     cuisine = request.GET.get('cuisine')
-    print(cuisine)
     if cuisine is not None:
         if ((cuisine == "Gujarati") or (cuisine == "Punjabi")):
             foods = Food.objects.filter(status="Enabled", course=cuisine)
@@ -247,7 +244,6 @@ def edit_food(request, foodID):
             float(food.base_price)/100
 
         status = request.POST.get('disabled')
-        print(status)
         if status == 'on':
             food.status = "Disabled"
         else:
@@ -323,7 +319,6 @@ def add_food(request):
 def add_deliveryBoy(request, orderID):
     order = Order.objects.get(id=orderID)
     dName = request.POST['deliveryBoy']
-    print(dName)
     user = User.objects.get(first_name=dName)
     deliveryBoy = Staff.objects.get(staff_id=user)
     order.delivery_boy = deliveryBoy
@@ -404,10 +399,8 @@ def cart(request):
 def placeOrder(request):
     to_email = []
     customer = Customer.objects.get(customer=request.user)
-    print(customer.address)
     items = Cart.objects.filter(user=request.user)
     for item in items:
-        print(item)
         food = item.food
         order = Order.objects.create(customer=customer, payment_status="Pending",
                                      delivery_status="Pending", total_amount=food.sale_price, payment_method="Cash On Delivery", location=customer.address)
@@ -480,7 +473,6 @@ def order_view_edit(request, orderID):
 def create_orders_admin(request):
     items = Food.objects.all()
     if request.method == "POST":
-        print(request.user.id)
         staff = Staff.objects.get(staff_id_id=request.user.id)
         created_cart = []
         for index, item in enumerate(request.POST.getlist("product")):
@@ -590,7 +582,6 @@ def stock_item_out_admin(request):
 
 
 def get_order_data(request, order_id):
-    print(order_id)
     order = Order.objects.get(id=order_id)
     orderTime = order.order_timestamp
     dt = datetime.datetime.date(orderTime)
