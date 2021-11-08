@@ -1,0 +1,40 @@
+version : '3'
+
+services:
+    resturant:
+        image: resturant
+        build:
+            context: .
+        ports: 
+            - "8000:8000"
+        volumes:
+            - .:/app
+        networks:
+            - resturantnet
+            
+    ngnix:
+        image: nginx
+        depends_on:
+          - resturant
+        ports:
+          - "80:80"
+        command: [nginx-debug, '-g', 'daemon off;']
+        networks:
+            - resturantnet
+    
+    mongo:
+        image: mongo
+        restart: always
+        ports:
+            - 27017:27017
+        depends_on:
+            - resturant
+        networks:
+            - resturantnet
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+            MONGO_INITDB_HOST: ${MONGODB_HOST}
+
+networks:
+    resturantnet:
