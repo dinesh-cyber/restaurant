@@ -121,11 +121,15 @@
                                     </a>
                                 </td> -->
                                 <td>
-                                    <a href="/dashboard/admin/orders/edit/{{order.id}}">
                                         <span class="input-group-btn">
-                                            <button
-                                                class="btn btn-primary {%ifequal order.payment_status 'Completed'%}disabled{%endifequal%}"
-                                                type="button">Edit</button>
+                                            
+                                            {%ifequal order.payment_status 'Completed'%}
+                                                <button class="btn btn-primary disabled" type="button">Edit</button>
+                                            {%else%}
+                                            <a href="/dashboard/admin/orders/edit/{{order.id}}">
+                                                <button class="btn btn-primary" type="button">Edit</button>
+                                            </a>
+                                            {%endifequal%}"
                                         </span>
                                     </a>
                                     <a href="/dashboard/admin/orders/view/{{order.id}}">
