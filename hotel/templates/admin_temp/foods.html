@@ -112,6 +112,27 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% if foods.has_other_pages %}
+                    <ul class="pagination">
+                      {% if foods.has_previous %}
+                        <li><a href="?page={{ foods.previous_page_number }}">&laquo;</a></li>
+                      {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                      {% endif %}
+                      {% for i in foods.paginator.page_range %}
+                        {% if foods.number == i %}
+                          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                          <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                      {% endfor %}
+                      {% if foods.has_next %}
+                        <li><a href="?page={{ foods.next_page_number }}">&raquo;</a></li>
+                      {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                      {% endif %}
+                    </ul>
+                  {% endif %}
                 </div>
                 <!-- /.panel-body -->
             </div>
@@ -130,9 +151,9 @@
 <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
 
 <!-- DataTables JavaScript -->
-<script src="{% static '/vendor/datatables/js/jquery.dataTables.min.js'%}"></script>
+<!-- <script src="{% static '/vendor/datatables/js/jquery.dataTables.min.js'%}"></script>
 <script src="{% static '/vendor/datatables-plugins/dataTables.bootstrap.min.js'%}"></script>
-<script src="{% static '/vendor/datatables-responsive/dataTables.responsive.js'%}"></script>
+<script src="{% static '/vendor/datatables-responsive/dataTables.responsive.js'%}"></script> -->
 
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>

@@ -144,6 +144,7 @@ class Order(models.Model):
     def confirmOrder(self):
         self.order_timestamp = timezone.localtime().__str__()[:19]
         self.payment_status = self.completed
+        self.delivery_status = self.completed
         self.save()
 
     def confirmDelivery(self):

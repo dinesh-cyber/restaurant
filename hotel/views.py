@@ -22,6 +22,7 @@ from django.utils import timezone
 # from reportlab.pdfgen import canvas
 from .models import Customer, Comment, Order, stock, Food, RawItem, Data, Cart, OrderContent, Staff, DeliveryBoy, FoodCategories
 from .forms import SignUpForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def signup(request):
@@ -57,7 +58,7 @@ def dashboard_admin(request):
     customers = Customer.objects.count()
     completed_orders = Order.objects.filter(payment_status="Completed")
     top_customers = Customer.objects.filter().order_by('-total_sale')
-    latest_orders = Order.objects.filter().order_by('-order_timestamp')
+    latest_orders = Order.objects.all().order_by('-updated_date')[:10]
     datas = Data.objects.filter().order_by('date')
     sales = 0
     today_min = datetime.datetime.combine(
@@ -125,6 +126,16 @@ def users_admin(request):
 def orders_admin(request):
     orders = Order.objects.filter().order_by('-updated_date')
     dBoys = Staff.objects.filter(role='Delivery Boy')
+    paginator = Paginator(orders, 10)
+    page = request.GET.get('page')
+    try:
+        orders = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        orders = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        orders = paginator.page(paginator.num_pages)
     return render(request, 'admin_temp/orders.html', {'orders': orders, 'dBoys': dBoys})
 
 
@@ -154,6 +165,14 @@ def create_orders_admin(request):
 def foods_admin(request):
     foods = Food.objects.filter()
     fCategories = FoodCategories.objects.filter()
+    paginator = Paginator(foods, 10)
+    page = request.GET.get('page')
+    try:
+        foods = paginator.page(page)
+    except PageNotAnInteger:
+        foods = paginator.page(1)
+    except EmptyPage:
+        foods = paginator.page(paginator.num_pages)
     return render(request, 'admin_temp/foods.html', {'foods': foods, 'fCategories': fCategories})
 
 

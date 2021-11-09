@@ -32,7 +32,6 @@
                                 <th>Order Time</th>
                                 <th>Amount</th>
                                 <th>Payment Status</th>
-                                <th>Delivery Status</th>
                                 <th>Delivery Boy</th>
                                 <th>Confirm Payment</th>
                                 <th>Confirm Delivery</th>
@@ -54,12 +53,6 @@
                                 </td>
                                 <td>{% if order.payment_status == 'Completed' %}
                                     <span class="label label-success">Paid</span>
-                                    {% else %}
-                                    <span class="label label-danger">Pending</span>
-                                    {% endif %}
-                                </td>
-                                <td>{% if order.delivery_status == 'Completed' %}
-                                    <span class="label label-success">Delivered</span>
                                     {% else %}
                                     <span class="label label-danger">Pending</span>
                                     {% endif %}
@@ -149,6 +142,28 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% if orders.has_other_pages %}
+                    <ul class="pagination">
+                      {% if orders.has_previous %}
+                        <li><a href="?page={{ orders.previous_page_number }}">&laquo;</a></li>
+                      {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                      {% endif %}
+                      {% for i in orders.paginator.page_range %}
+                        {% if orders.number == i %}
+                          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                          <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                      {% endfor %}
+                      {% if orders.has_next %}
+                        <li><a href="?page={{ orders.next_page_number }}">&raquo;</a></li>
+                      {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                      {% endif %}
+                    </ul>
+                  {% endif %}
+                    
                 </div>
                 <!-- /.panel-body -->
             </div>
@@ -162,14 +177,15 @@
 <!-- /#page-wrapper -->
 
 </div>
+
 <!-- /#wrapper -->
 
 <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
 
 <!-- DataTables JavaScript -->
-<script src="{% static '/vendor/datatables/js/jquery.dataTables.min.js'%}"></script>
+<!-- <script src="{% static '/vendor/datatables/js/jquery.dataTables.min.js'%}"></script>
 <script src="{% static '/vendor/datatables-plugins/dataTables.bootstrap.min.js'%}"></script>
-<script src="{% static '/vendor/datatables-responsive/dataTables.responsive.js'%}"></script>
+<script src="{% static '/vendor/datatables-responsive/dataTables.responsive.js'%}"></script> -->
 
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>
