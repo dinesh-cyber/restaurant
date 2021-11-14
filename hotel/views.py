@@ -607,3 +607,18 @@ def get_order_data(request, order_id):
     order.oid = str(dt.year) + str(dt.month) + str(dt.day) + str(order.id)
     items = Food.objects.all()
     return render(request, 'admin_temp/print-order.html', {'items': items, 'order': order})
+
+def get_reports(request):
+    foods = Food.objects.all()
+    orders=[]
+    data = {}
+    if request.method == "POST":
+        orders = Order.objects.filter(cart__food=request.POST.get("food")).filter(order_timestamp__range=[request.POST.get("from_date"), request.POST.get("to_date")])
+        data = {
+            "to_date" : request.POST.get("to_date"),
+            "from_date":  request.POST.get("from_date")
+        }
+        return render(request, 'admin_temp/reports.html', {'foods':foods, 'orders' : orders, "data": data})
+    return render(request, 'admin_temp/reports.html', {'foods':foods, 'orders' : orders, "data":{}})
+
+
