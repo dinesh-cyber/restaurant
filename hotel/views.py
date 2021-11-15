@@ -607,3 +607,59 @@ def get_order_data(request, order_id):
     order.oid = str(dt.year) + str(dt.month) + str(dt.day) + str(order.id)
     items = Food.objects.all()
     return render(request, 'admin_temp/print-order.html', {'items': items, 'order': order})
+
+
+def get_reports(request):
+    foods = Food.objects.all()
+    orders = []
+    data = {"to_date": datetime.date.today(),
+            "from_date":  datetime.date.today()}
+    total = 0
+    if request.method == "POST":
+        today_max = datetime.datetime.combine(datetime.datetime.strptime(
+            request.POST.get("to_date"), "%Y-%m-%d").date(), datetime.time.max)
+        orders = Order.objects.filter().filter(
+            order_timestamp__range=[request.POST.get("from_date"), today_max])
+        data = {
+            "to_date": request.POST.get("to_date"),
+            "from_date":  request.POST.get("from_date")
+        }
+        for order in orders:
+            total = total + (order.total_amount)
+            print(total)
+        return render(request, 'admin_temp/reports.html', {'foods': foods, 'orders': orders, "data": data, "total": total})
+    return render(request, 'admin_temp/reports.html', {'foods': foods, 'orders': orders, "data": data, "total": total})
+
+
+def get_reports_foods(request):
+    foods = Food.objects.filter()
+    orders = []
+    data = {"to_date": datetime.date.today(),
+            "from_date":  datetime.date.today()}
+    total = 0
+    if request.method == "POST":
+        today_max = datetime.datetime.combine(datetime.datetime.strptime(
+            request.POST.get("to_date"), "%Y-%m-%d").date(), datetime.time.max)
+        orders = Order.objects.filter().filter(
+            order_timestamp__range=[request.POST.get("from_date"), today_max])
+        data = {
+            "to_date": request.POST.get("to_date"),
+            "from_date":  request.POST.get("from_date")
+        }
+        dict = []
+        for i in range(len(foods)):
+            val = foodByordes(orders, foods[i].id)
+            thisdict = {"item": foods[i],  "qnt": val}
+            dict.append(thisdict)
+        print(dict)
+        return render(request, 'admin_temp/food-report.html', {'foods': foods, 'orders': orders, "data": data, "dict": dict})
+    return render(request, 'admin_temp/food-report.html', {'foods': foods, 'orders': orders, "data": data, "dict": {}})
+
+
+def foodByordes(orders, fid):
+    items = []
+    for order in orders:
+        for item in order.cart.all():
+            if(item.food.id == fid):
+                items.append(item.quantity)
+    return sum(items)

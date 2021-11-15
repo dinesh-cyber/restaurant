@@ -43,13 +43,18 @@
                             <tr>
                                 <td>{{order.id}}</td>
                                 <td>{{order.order_timestamp}}
+                                    {% if order.table_name == 16 %}
+                                    Parcel
+                                    {% else %}
                                     <strong>Table:{{order.table_name}}</strong>
+                                    {% endif %}
                                 </td>
                                 <td>
                                     {% for food in order.cart.all %}
                                     *{{food.food}} <br>
                                     {% endfor %}
                                     <strong>{{order.total_amount}}</strong>
+
                                 </td>
                                 <td>{% if order.payment_status == 'Completed' %}
                                     <span class="label label-success">Paid</span>
@@ -121,16 +126,16 @@
                                     </a>
                                 </td> -->
                                 <td>
-                                        <span class="input-group-btn">
-                                            
-                                            {%ifequal order.payment_status 'Completed'%}
-                                                <button class="btn btn-primary disabled" type="button">Edit</button>
-                                            {%else%}
-                                            <a href="/dashboard/admin/orders/edit/{{order.id}}">
-                                                <button class="btn btn-primary" type="button">Edit</button>
-                                            </a>
-                                            {%endifequal%}"
-                                        </span>
+                                    <span class="input-group-btn">
+
+                                        {%ifequal order.payment_status 'Completed'%}
+                                        <button class="btn btn-primary disabled" type="button">Edit</button>
+                                        {%else%}
+                                        <a href="/dashboard/admin/orders/edit/{{order.id}}">
+                                            <button class="btn btn-primary" type="button">Edit</button>
+                                        </a>
+                                        {%endifequal%}"
+                                    </span>
                                     </a>
                                     <a href="/dashboard/admin/orders/view/{{order.id}}">
                                         <span class="input-group-btn">
@@ -148,26 +153,26 @@
                     </table>
                     {% if orders.has_other_pages %}
                     <ul class="pagination">
-                      {% if orders.has_previous %}
+                        {% if orders.has_previous %}
                         <li><a href="?page={{ orders.previous_page_number }}">&laquo;</a></li>
-                      {% else %}
-                        <li class="disabled"><span>&laquo;</span></li>
-                      {% endif %}
-                      {% for i in orders.paginator.page_range %}
-                        {% if orders.number == i %}
-                          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                         {% else %}
-                          <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        <li class="disabled"><span>&laquo;</span></li>
                         {% endif %}
-                      {% endfor %}
-                      {% if orders.has_next %}
+                        {% for i in orders.paginator.page_range %}
+                        {% if orders.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if orders.has_next %}
                         <li><a href="?page={{ orders.next_page_number }}">&raquo;</a></li>
-                      {% else %}
+                        {% else %}
                         <li class="disabled"><span>&raquo;</span></li>
-                      {% endif %}
+                        {% endif %}
                     </ul>
-                  {% endif %}
-                    
+                    {% endif %}
+
                 </div>
                 <!-- /.panel-body -->
             </div>
