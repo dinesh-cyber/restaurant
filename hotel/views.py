@@ -626,7 +626,6 @@ def get_reports(request):
         }
         for order in orders:
             total = total + (order.total_amount)
-            print(total)
         return render(request, 'admin_temp/reports.html', {'foods': foods, 'orders': orders, "data": data, "total": total})
     return render(request, 'admin_temp/reports.html', {'foods': foods, 'orders': orders, "data": data, "total": total})
 
@@ -651,7 +650,6 @@ def get_reports_foods(request):
             val = foodByordes(orders, foods[i].id)
             thisdict = {"item": foods[i],  "qnt": val}
             dict.append(thisdict)
-        print(dict)
         return render(request, 'admin_temp/food-report.html', {'foods': foods, 'orders': orders, "data": data, "dict": dict})
     return render(request, 'admin_temp/food-report.html', {'foods': foods, 'orders': orders, "data": data, "dict": {}})
 
