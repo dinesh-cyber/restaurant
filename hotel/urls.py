@@ -59,5 +59,7 @@ urlpatterns = [
         views.get_order_data, name='get_order_data'),
     url(r'^order/reports/$',
         views.get_reports, name='reports_admin'),
+    url(r'^order/reports-food/$',
+        views.get_reports_foods, name='get_reports_foods'),
 
 ]

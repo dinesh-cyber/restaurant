@@ -147,7 +147,7 @@
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Created by</th>
-                        <th scope="col">Type</th>
+                        <th scope="col">Items</th>
                         <th scope="col">Order Timestamp</th>
                         <th scope="col">Total Amount</th>
                         <th scope="col">Satus</th>
@@ -158,7 +158,10 @@
                     <tr>
                         <td>{{order.id}}</td>
                         <td>{{order.staff.staff_id.first_name}} {{order.staff.staff_id.last_name}}</td>
-                        <td>Delivery</td>
+                        <td> {% for food in order.cart.all %}
+                            *{{food.food}} ({{food.quantity}}) <br>
+                            {% endfor %}
+                        </td>
                         <td>{{order.order_timestamp}}</td>
                         <td>{{order.total_amount}}</td>
                         <td>
