@@ -3,6 +3,9 @@ from django.db.models import F
 import datetime
 from django.http import JsonResponse
 import json
+import collections
+import functools
+import operator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse, HttpResponseRedirect
@@ -645,19 +648,12 @@ def get_reports_foods(request):
             "to_date": request.POST.get("to_date"),
             "from_date":  request.POST.get("from_date")
         }
-        dict = []
-        for i in range(len(foods)):
-            val = foodByordes(orders, foods[i].id)
-            thisdict = {"item": foods[i],  "qnt": val}
-            dict.append(thisdict)
-        return render(request, 'admin_temp/food-report.html', {'foods': foods, 'orders': orders, "data": data, "dict": dict})
+        ini_dict = []
+        for order in orders:
+            for item in order.cart.all():
+                thisdict = {item.food: item.quantity}
+                ini_dict.append(thisdict)
+        result = dict(functools.reduce(operator.add,
+                                       map(collections.Counter, ini_dict)))
+        return render(request, 'admin_temp/food-report.html', {'foods': foods, 'orders': orders, "data": data, "dict": result})
     return render(request, 'admin_temp/food-report.html', {'foods': foods, 'orders': orders, "data": data, "dict": {}})
-
-
-def foodByordes(orders, fid):
-    items = []
-    for order in orders:
-        for item in order.cart.all():
-            if(item.food.id == fid):
-                items.append(item.quantity)
-    return sum(items)
