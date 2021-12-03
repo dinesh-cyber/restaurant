@@ -478,13 +478,12 @@ def order_view_edit(request, orderID):
             cart = Cart.objects.create(
                 food_id=item, user=request.user, quantity=request.POST.getlist("qty")[index])
             created_cart.append(cart)
-        food = cart.food
-        order = Order.objects.filter(id=orderID).update(staff=staff, payment_status="Pending",
-                                                        note=request.POST.get(
-                                                            "note"), discount=request.POST.get(
-                                                            "discount"),
-                                                        delivery_status="Pending", total_amount=request.POST.get("net_amount_value"),
-                                                        payment_method="Cash On Delivery")
+        Order.objects.filter(id=orderID).update(staff=staff, payment_status="Pending",
+                                                note=request.POST.get(
+                                                    "note"), discount=request.POST.get(
+                                                    "discount"),
+                                                delivery_status="Pending", total_amount=request.POST.get("net_amount_value"),
+                                                payment_method="Cash On Delivery")
         orders.cart.clear()
         for cart in created_cart:
             orders.cart.add(cart)
@@ -501,7 +500,6 @@ def create_orders_admin(request):
             cart = Cart.objects.create(
                 food_id=item, user=request.user, quantity=request.POST.getlist("qty")[index])
             created_cart.append(cart)
-        food = cart.food
         order = Order.objects.create(staff=staff, payment_status="Pending",
                                      delivery_status="Pending", total_amount=request.POST.get("net_amount_value"), discount=request.POST.get("discount"), table_name=request.POST.get("table_name"), payment_method="Cash On Delivery")
         for cart in created_cart:
@@ -648,7 +646,6 @@ def get_reports_foods(request):
     orders = []
     data = {"to_date": datetime.date.today(),
             "from_date":  datetime.date.today()}
-    total = 0
     if request.method == "POST":
         today_max = datetime.datetime.combine(datetime.datetime.strptime(
             request.POST.get("to_date"), "%Y-%m-%d").date(), datetime.time.max)
@@ -715,6 +712,12 @@ def add_payment(request):
         billNo = request.POST['billNo']
         payment = DailyPayment.objects.create(
             name=name, description=description, amount=amount, billNo=billNo)
-        save = payment.save()
+        payment.save()
         return redirect('hotel:get_payments_data')
     return render(request, 'admin_temp/create-payment.html')
+
+
+def json_get_reports(request):
+    completed_orders = Order.objects.filter(
+        payment_status="Completed").values()
+    return JsonResponse({"orders": list(completed_orders)})

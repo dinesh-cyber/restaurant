@@ -65,4 +65,7 @@ urlpatterns = [
         views.get_payments_data, name='get_payments_data'),
     url(r'^dashboard/admin/payment/create/$',
         views.add_payment, name='add_payment'),
+    url(r'^order/reports/json/$',
+        views.json_get_reports, name='json_get_reports'),
+
 ]
