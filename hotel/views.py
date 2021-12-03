@@ -23,7 +23,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.utils import timezone
 # from reportlab.pdfgen import canvas
-from .models import Customer, Comment, Order, stock, Food, RawItem, Data, Cart, OrderContent, Staff, DeliveryBoy, FoodCategories
+from .models import Customer, Comment, Order, stock, Food, RawItem, Data, Cart, OrderContent, Staff, DeliveryBoy, FoodCategories, DailyPayment
 from .forms import SignUpForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -603,15 +603,23 @@ def stock_item_out_admin(request):
     return render(request, 'admin_temp/stock-out.html', {'RawItems': RawItems, 'error_msg': error_msg})
 
 
+@login_required
+@staff_member_required
 def get_order_data(request, order_id):
+    printType = request.GET.get('printType')
     order = Order.objects.get(id=order_id)
+    if(printType == 'Bill No'):
+        order.confirmDelivery()
+        order.save()
     orderTime = order.order_timestamp
     dt = datetime.datetime.date(orderTime)
     order.oid = str(dt.year) + str(dt.month) + str(dt.day) + str(order.id)
     items = Food.objects.all()
-    return render(request, 'admin_temp/print-order.html', {'items': items, 'order': order})
+    return render(request, 'admin_temp/print-order.html', {'items': items, 'order': order, 'printType': printType})
 
 
+@login_required
+@staff_member_required
 def get_reports(request):
     foods = Food.objects.all()
     orders = []
@@ -633,6 +641,8 @@ def get_reports(request):
     return render(request, 'admin_temp/reports.html', {'foods': foods, 'orders': orders, "data": data, "total": total})
 
 
+@login_required
+@staff_member_required
 def get_reports_foods(request):
     foods = Food.objects.filter()
     orders = []
@@ -657,3 +667,54 @@ def get_reports_foods(request):
                                        map(collections.Counter, ini_dict)))
         return render(request, 'admin_temp/food-report.html', {'foods': foods, 'orders': orders, "data": data, "dict": result})
     return render(request, 'admin_temp/food-report.html', {'foods': foods, 'orders': orders, "data": data, "dict": {}})
+
+
+@login_required
+@staff_member_required
+def get_payments_data(request):
+    data = {"to_date": datetime.date.today(),
+            "from_date":  datetime.date.today(),
+            "name": "",
+            "billNo": ""}
+    today_min = datetime.datetime.combine(
+        datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(
+        datetime.date.today(), datetime.time.max)
+    dailyPayments = DailyPayment.objects.filter(
+        created_date__range=(today_min, today_max)).order_by('-id')
+    totalAmount = sum(DailyPayment.objects.filter(created_date__range=(today_min, today_max)
+                                                  ).filter().values_list('amount', flat=True))
+    if request.method == "POST":
+        data = {
+            "to_date": request.POST.get("to_date"),
+            "from_date":  request.POST.get("from_date"),
+            "name": request.POST.get("name"),
+            "billNo": request.POST.get("billNo")
+        }
+        sname = request.POST.get("name")
+        billNo = request.POST.get("billNo")
+        min = datetime.datetime.combine(datetime.datetime.strptime(
+            request.POST.get("from_date"), "%Y-%m-%d").date(), datetime.time.min)
+        max = datetime.datetime.combine(datetime.datetime.strptime(
+            request.POST.get("to_date"), "%Y-%m-%d").date(), datetime.time.max)
+        dailyPayments = DailyPayment.objects.filter(name__contains=sname, billNo__contains=billNo,
+                                                    created_date__gte=min, created_date__lte=max).order_by('-id')
+        totalAmount = sum(DailyPayment.objects.filter(
+            name__contains=sname, billNo__contains=billNo, created_date__gte=min, created_date__lte=max).filter().values_list('amount', flat=True))
+        return render(request, 'admin_temp/daily-payments.html', {'dailyPayments': dailyPayments, 'data': data, 'totalAmount': totalAmount})
+    return render(request, 'admin_temp/daily-payments.html', {'dailyPayments': dailyPayments, 'data': data, 'totalAmount': totalAmount})
+
+
+@login_required
+@staff_member_required
+def add_payment(request):
+    if request.method == "POST":
+        name = request.POST['name']
+        description = request.POST['description']
+        amount = request.POST['amount']
+        billNo = request.POST['billNo']
+        payment = DailyPayment.objects.create(
+            name=name, description=description, amount=amount, billNo=billNo)
+        save = payment.save()
+        return redirect('hotel:get_payments_data')
+    return render(request, 'admin_temp/create-payment.html')

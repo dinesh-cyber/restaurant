@@ -114,6 +114,7 @@
                                                 type="button">Paid</button>
                                         </span>
                                     </a>
+                                    {{order.delivery_status}}
                                 </td>
 
                                 <!-- <td>
@@ -128,7 +129,7 @@
                                 <td>
                                     <span class="input-group-btn">
 
-                                        {%ifequal order.payment_status 'Completed'%}
+                                        {%ifequal order.delivery_status 'Completed'%}
                                         <button class="btn btn-primary disabled" type="button">Edit</button>
                                         {%else%}
                                         <a href="/dashboard/admin/orders/edit/{{order.id}}">
@@ -142,8 +143,10 @@
                                             <button class="btn btn-info" type="button">View</button>
                                         </span>
                                     </a>
-                                    <button onclick="getProductData('{{order.id}}')" class="btn btn-default"
-                                        type="button">Print</button>
+                                    <button data-option="KOT" onclick="getProductData('{{order.id}}','KOT')"
+                                        class="btn btn-success" type="button">KOT</button>
+                                    <button data-option="Bill" onclick="getProductData('{{order.id}}','Bill No')"
+                                        class="btn btn-danger" type="button">Final Bill</button>
 
 
                                 </td>
@@ -206,19 +209,21 @@
 
 
     });
-    function getProductData(order_id) {
+    function getProductData(order_id, printType) {
         var base_url = window.location.origin + '/';
         $.ajax({
-            url: base_url + 'order/print/' + order_id,
+            url: base_url + 'order/print/' + order_id + '?printType=' + printType,
             type: 'get',
             dataType: 'html',
             success: function (response) {
-                console.log(183, response)
                 var printWin = window.open("", "getProductData");
                 printWin.document.open();
                 printWin.document.write(response);
                 printWin.document.close();
                 printWin.print()
+                if (printType == 'Bill No') {
+                    location.reload();
+                }
             } // /success
         });
     }
