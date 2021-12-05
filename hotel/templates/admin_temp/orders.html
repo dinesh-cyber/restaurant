@@ -129,13 +129,18 @@
                                 <td>
                                     <span class="input-group-btn">
 
-                                        {%ifequal order.delivery_status 'Completed'%}
-                                        <button class="btn btn-primary disabled" type="button">Edit</button>
+                                        {%ifequal order.delivery_status 'Completed' %}
+                                        {%else%}
+                                        {%ifequal order.payment_status 'Completed' %}
                                         {%else%}
                                         <a href="/dashboard/admin/orders/edit/{{order.id}}">
                                             <button class="btn btn-primary" type="button">Edit</button>
                                         </a>
+                                        <button data-option="KOT" onclick="getProductData('{{order.id}}','KOT')"
+                                            class="btn btn-success" type="button">KOT</button>
+                                        </a>
                                         {%endifequal%}"
+                                        {%endifequal%}
                                     </span>
                                     </a>
                                     <a href="/dashboard/admin/orders/view/{{order.id}}">
@@ -143,10 +148,10 @@
                                             <button class="btn btn-info" type="button">View</button>
                                         </span>
                                     </a>
-                                    <button data-option="KOT" onclick="getProductData('{{order.id}}','KOT')"
-                                        class="btn btn-success" type="button">KOT</button>
+
+
                                     <button data-option="Bill" onclick="getProductData('{{order.id}}','Bill No')"
-                                        class="btn btn-danger" type="button">Final Bill</button>
+                                        class="btn btn-danger" type="button">Bill</button>
 
 
                                 </td>
