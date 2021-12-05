@@ -144,7 +144,6 @@ class Order(models.Model):
     def confirmOrder(self):
         self.order_timestamp = timezone.localtime().__str__()[:19]
         self.payment_status = self.completed
-        self.delivery_status = self.completed
         self.save()
 
     def confirmDelivery(self):
@@ -213,4 +212,12 @@ class stock(models.Model):
 
 class FoodCategories(models.Model):
     name = models.CharField(max_length=250)
+    created_date = models.DateTimeField(default=timezone.now)
+
+
+class DailyPayment(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=250)
+    amount = models.FloatField()
+    billNo = models.CharField(max_length=50, default='0')
     created_date = models.DateTimeField(default=timezone.now)

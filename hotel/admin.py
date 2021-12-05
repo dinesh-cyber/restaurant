@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Customer, RawItem, Staff, Order, Food, Comment, stock, Data, OrderContent, Cart, DeliveryBoy, FoodCategories
+from .models import Customer, RawItem, Staff, Order, Food, Comment, stock, Data, OrderContent, Cart, DeliveryBoy, FoodCategories, DailyPayment
 
 admin.site.register(Customer)
 admin.site.register(Staff)
@@ -13,3 +13,4 @@ admin.site.register(Cart)
 admin.site.register(RawItem)
 admin.site.register(stock)
 admin.site.register(FoodCategories)
+admin.site.register(DailyPayment)

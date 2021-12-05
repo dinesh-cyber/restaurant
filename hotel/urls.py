@@ -61,5 +61,11 @@ urlpatterns = [
         views.get_reports, name='reports_admin'),
     url(r'^order/reports-food/$',
         views.get_reports_foods, name='get_reports_foods'),
+    url(r'^dashboard/daily-payments/$',
+        views.get_payments_data, name='get_payments_data'),
+    url(r'^dashboard/admin/payment/create/$',
+        views.add_payment, name='add_payment'),
+    url(r'^order/reports/json/$',
+        views.json_get_reports, name='json_get_reports'),
 
 ]
