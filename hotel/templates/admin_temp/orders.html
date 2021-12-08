@@ -129,9 +129,8 @@
                                 <td>
                                     <span class="input-group-btn">
 
-                                        {%ifequal order.delivery_status 'Completed' %}
-                                        {%else%}
-                                        {%ifequal order.payment_status 'Completed' %}
+                                        {%if order.delivery_status == 'Completed' or order.payment_status == 'Completed'%}
+
                                         {%else%}
                                         <a href="/dashboard/admin/orders/edit/{{order.id}}">
                                             <button class="btn btn-primary" type="button">Edit</button>
@@ -139,8 +138,7 @@
                                         <button data-option="KOT" onclick="getProductData('{{order.id}}','KOT')"
                                             class="btn btn-success" type="button">KOT</button>
                                         </a>
-                                        {%endifequal%}"
-                                        {%endifequal%}
+                                        {%endif%}
                                     </span>
                                     </a>
                                     <a href="/dashboard/admin/orders/view/{{order.id}}">
