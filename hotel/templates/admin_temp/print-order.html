@@ -7,12 +7,12 @@
                 Cell: 9705130400</p>
             <table style="margin-top: 10px;margin-bottom: 6px; ">
                 <tr>
-                    <td>{{printType}} : {{order.id}}</td>
+                    <td>{{printType}}:{{order.id}} <br></td>
                     <td style="text-align: end;">Date : {{order.order_timestamp}}</td>
                 </tr>
                 <tr>
-                    <td>Waiter : </td>
-                    <td> {{order.delivery_boy.staff_id.first_name}}</td>
+                    <td>Waiter:</td>
+                    <td> {{order.delivery_boy.staff_id.first_name}}, Table:{{order.table_name}}</td>
                 </tr>
             </table>
 
