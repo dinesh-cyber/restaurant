@@ -33,6 +33,15 @@ In this project, we present a web based restaurant management system to manage t
 
 
 ## Contributors
-* Pradeep Gangwar ([@pradeepgangwar](https://github.com/pradeepgangwar))
-* Sashank Mishra ([@sashank27](https://github.com/sashank27))
-* Shreyansh Dwivedi ([@shreyanshdwivedi](https://github.com/shreyanshdwivedi))
+     "default": {
+            "ENGINE": "djongo",
+            "NAME": os.environ.get("MONGODB_DATABASE", "resturant"),
+            "CLIENT": {
+                "host": "mongodb://3.15.159.248",
+                "port": 27017,
+                "username": os.environ.get("MONGODB_USERNAME", "resturant"),
+                "password": os.environ.get("MONGODB_PASSWORD", "resturant"),
+                "authSource": "admin",
+                "authMechanism": "SCRAM-SHA-1",
+            },
+        }

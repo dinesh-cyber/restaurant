@@ -54,7 +54,6 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Order Time</th>
-                                <th>Items (Qty)</th>
                                 <th>Amount</th>
                                 <th>Payment Status</th>
                             </tr>
@@ -66,12 +65,7 @@
                                 <td>{{order.order_timestamp}}
                                     <strong>Table:{{order.table_name}}</strong>
                                 </td>
-                                <td>
-                                    {% for food in order.cart.all %}
-                                    *{{food.food}} ({{food.quantity}})<br>
-                                    {% endfor %}
 
-                                </td>
                                 <td> <strong>{{order.total_amount}}</strong></td>
                                 <td>{% if order.payment_status == 'Completed' %}
                                     <span class="label label-success">Paid</span>
