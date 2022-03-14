@@ -168,7 +168,7 @@ def create_orders_admin(request):
 def foods_admin(request):
     foods = Food.objects.filter()
     fCategories = FoodCategories.objects.filter()
-    paginator = Paginator(foods, 10)
+    paginator = Paginator(foods, 1000)
     page = request.GET.get('page')
     try:
         foods = paginator.page(page)
@@ -627,14 +627,16 @@ def get_reports(request):
     if request.method == "POST":
         today_max = datetime.datetime.combine(datetime.datetime.strptime(
             request.POST.get("to_date"), "%Y-%m-%d").date(), datetime.time.max)
-        orders = Order.objects.filter().filter(
+        today_max = datetime.datetime.combine(
+            datetime.date.today(), datetime.time.max)
+        orders = Order.objects.filter(
             order_timestamp__range=[request.POST.get("from_date"), today_max])
         data = {
             "to_date": request.POST.get("to_date"),
             "from_date":  request.POST.get("from_date")
         }
-        for order in orders:
-            total = total + (order.total_amount)
+        total = sum(Order.objects.filter(
+            order_timestamp__range=[request.POST.get("from_date"), today_max]).filter().values_list('total_amount', flat=True))
         return render(request, 'admin_temp/reports.html', {'foods': foods, 'orders': orders, "data": data, "total": total})
     return render(request, 'admin_temp/reports.html', {'foods': foods, 'orders': orders, "data": data, "total": total})
 
